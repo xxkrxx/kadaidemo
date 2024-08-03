@@ -27,7 +27,7 @@ public class ForgetPasswordController {
     // パスワード再設定リクエストフォームを表示するメソッド
     @GetMapping("/forgetPassword")
     public String showPasswordResetRequestForm() {
-        return "forgetPassword"; // テンプレート名を小文字に変更
+        return "forgetPassword"; 
     }
     
     // パスワード再設定リクエストを処理するメソッド
@@ -39,14 +39,14 @@ public class ForgetPasswordController {
         // 新しいパスワードと確認パスワードが一致するか確認
         if (!new_password.equals(confirm_password)) {
             model.addAttribute("errorMessage", "新しいパスワードと確認パスワードが一致しません。");
-            return "forgetPassword"; // テンプレート名を小文字に変更
+            return "forgetPassword"; 
         }
 
         // メールアドレスに対応する管理者を検索
         Optional<Administrator> optionalAdmin = administratorRepository.findByEmail(email);
         if (!optionalAdmin.isPresent()) {
             model.addAttribute("errorMessage", "メールアドレスが見つかりません。");
-            return "forgetPassword"; // テンプレート名を小文字に変更
+            return "forgetPassword"; 
         }
 
         // パスワードをエンコードして保存
