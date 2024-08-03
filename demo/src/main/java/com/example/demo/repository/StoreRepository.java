@@ -11,7 +11,7 @@ import com.example.demo.entity.Store;
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
+    // カスタムクエリを使用して、製品情報を含むすべての店舗を取得するメソッド
     @Query("SELECT s FROM Store s LEFT JOIN FETCH s.storeProducts")
     List<Store> findAllStoresWithProducts();
 }
-

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>店舗編集</title>
+    <link rel="stylesheet" href="/store.css">
+</head>
+<body>
+    <h1>店舗編集</h1>
+    <form th:action="@{/stores/{id}/edit(id=${store.id})}" method="post" th:object="${store}">
+        <div>
+            <label for="name">店舗名</label>
+            <input type="text" id="name" name="name" th:field="*{name}">
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></div>
+        </div>
+        <div>
+            <label for="address">住所</label>
+            <input type="text" id="address" name="address" th:field="*{address}">
+            <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" style="color: red;"></div>
+        </div>
+        <button type="submit">更新する</button>
+    </form>
+	<a th:href="@{/stores/list}">戻る</a>
+</body>
+</html>

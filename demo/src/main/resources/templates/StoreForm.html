@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新規作成画面</title>
+	<link rel="stylesheet" href="/store.css">
+</head>
+<body>
+    <h1>新規作成画面</h1>
+    <form th:action="@{/stores/create}" th:object="${store}" method="post">
+        <div>
+            <label for="name">店舗名</label>
+            <input type="text" id="name" th:field="*{name}" />
+        </div>
+        <div>
+            <label for="address">住所</label>
+            <input type="text" id="address" th:field="*{address}" />
+        </div>
+        <div>
+            <button type="submit">作成する</button>
+        </div>
+    </form>
+    <a href="/stores/list">戻る</a>
+</body>
+</html>
