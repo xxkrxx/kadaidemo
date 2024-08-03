@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>管理者詳細</title>
+    <script th:inline="javascript">
+        // 管理者編集ページに遷移する関数
+        function editAdmin(adminId) {
+            location.href = '/admin/edit/' + adminId;
+        }
+
+        // 管理者削除処理を実行する関数
+        function deleteAdmin(adminId) {
+            location.href = '/admin/delete/' + adminId;
+        }
+    </script>
+</head>
+<body>
+    <h1>管理者詳細</h1>
+
+    <!-- 管理者IDの表示 -->
+    <p>管理者ID: <span th:text="${admin.id}"></span></p>
+
+    <!-- 店舗名の表示 -->
+    <p>店舗名: <span th:text="${admin.store.name}"></span></p>
+
+    <!-- 姓の表示 -->
+    <p>姓: <span th:text="${admin.lastName}"></span></p>
+
+    <!-- 名の表示 -->
+    <p>名: <span th:text="${admin.firstName}"></span></p>
+
+    <!-- Emailの表示 -->
+    <p>Email: <span th:text="${admin.email}"></span></p>
+
+    <!-- 役職の表示 -->
+    <p>役職:
+        <ul>
+            <!-- 各役職の名前をリストで表示 -->
+            <li th:each="role : ${admin.roles}" th:text="${role.name}"></li>
+        </ul>
+    </p>
+
+    <!-- 権限の表示 -->
+    <p>権限:
+        <ul>
+            <!-- 各権限の名前をリストで表示 -->
+            <li th:each="post : ${admin.posts}" th:text="${post.name}"></li>
+        </ul>
+    </p>
+
+    <!-- 電話番号の表示 -->
+    <p>電話番号: <span th:text="${admin.phone}"></span></p>
+
+    <!-- 現在の管理者が管理者である場合に編集・削除ボタンを表示 -->
+    <div th:if="${isAdmin}">
+        <button th:onclick="|editAdmin(${admin.id})|">編集する</button>
+        <button th:onclick="|deleteAdmin(${admin.id})|">削除する</button>
+    </div>
+</body>
+</html>
+

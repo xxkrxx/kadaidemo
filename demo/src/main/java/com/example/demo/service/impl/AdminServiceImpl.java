@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -112,8 +113,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Administrator findByEmail(String email) {
-        return adminRepository.findByEmail(email).orElse(null);
+    public Optional<Administrator> findByEmail(String email) {
+        return adminRepository.findByEmail(email);
     }
 }
 

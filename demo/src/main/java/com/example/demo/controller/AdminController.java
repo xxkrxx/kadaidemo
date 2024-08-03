@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +73,7 @@ public class AdminController {
         logger.debug("すべての管理者のリストを取得しています");
         model.addAttribute("admins", adminService.getAllAdmins());
         addCurrentAdminDetailsToModel(model);
+        model.addAttribute("message", "管理者一覧を表示しています"); 
         return "AdminList";
     }
 
@@ -175,17 +178,29 @@ public class AdminController {
         return "redirect:/admin/details/" + admin.getId();
     }
 
-    // 現在の管理者の詳細をモデルに追加
+	 // 現在の管理者の詳細をモデルに追加
     private void addCurrentAdminDetailsToModel(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Administrator currentAdmin = adminService.findByEmail(userDetails.getUsername());
-            boolean isAdmin = currentAdmin != null && currentAdmin.getPosts().stream()
-                .anyMatch(post -> "管理者".equals(post.getName()));
-            model.addAttribute("isAdmin", isAdmin);
+            Optional<Administrator> currentAdminOpt = adminService.findByEmail(userDetails.getUsername());
+            if (currentAdminOpt.isPresent()) {
+                Administrator currentAdmin = currentAdminOpt.get();
+                boolean isAdmin = currentAdmin.getPosts().stream()
+                    .anyMatch(post -> "管理者".equals(post.getName()));
+                logger.debug("isAdmin: {}", isAdmin);
+                model.addAttribute("isAdmin", isAdmin);
+            } else {
+                logger.debug("管理者が見つかりません: {}", userDetails.getUsername());
+                model.addAttribute("isAdmin", false);
+            }
+        }else {
+            logger.debug("Authentication or Principal is null");
         }
+        // ログを追加してモデルの内容を確認
+        logger.debug("Model attributes: {}", model.asMap());
     }
+
 
     // 管理者フォームのモデル準備
     private void prepareAdminFormModel(Model model, Administrator admin) {
@@ -195,4 +210,5 @@ public class AdminController {
         model.addAttribute("allposts", postService.getAllPosts());
     }
 }
+
 
