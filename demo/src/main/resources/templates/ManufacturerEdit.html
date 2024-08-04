@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>メーカー編集</title>
+    <link rel="stylesheet" href="/manufacturer.css">
+</head>
+<body>
+    <h1>メーカー編集</h1>
+    <form th:action="@{/manufacturers/{id}/edit(id=${manufacturer.id})}" method="post" th:object="${manufacturer}">
+        <label for="name">メーカー名:</label>
+        <input type="text" id="name" name="name" th:value="${manufacturer.name}" />
+        <button type="submit">更新</button>
+        <a th:href="@{/manufacturers/{id}(id=${manufacturer.id})}">キャンセル</a>
+    </form>
+    <p th:if="${message}" th:text="${message}"></p>
+</body>
+</html>
