@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>中カテゴリ詳細</title>
+</head>
+<body>
+    <h1>中カテゴリ詳細</h1>
+    <div th:if="${middleCategory == null}">
+        <p>middleCategory is null</p>
+    </div>
+    <div th:if="${middleCategory != null}">
+        <p>中カテゴリID: <span th:text="${middleCategory.id}"></span></p>
+        <p>中カテゴリ名: <span th:text="${middleCategory.name}"></span></p>
+    </div>
+
+    <h2>小カテゴリ一覧</h2>
+    <div th:if="${smallCategories == null}">
+        <p>smallCategories is null</p>
+    </div>
+    <table th:if="${smallCategories != null}">
+        <thead>
+            <tr>
+                <th>小カテゴリID</th>
+                <th>小カテゴリ名</th>
+                <th>詳細ボタン</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="smallCategory : ${smallCategories}">
+                <td th:text="${smallCategory.id}">small_categories.id</td>
+                <td th:text="${smallCategory.name}">small_categories.name</td>
+                <td><a th:href="@{/categories/small/{id}(id=${smallCategory.id})}">詳細を見る</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
