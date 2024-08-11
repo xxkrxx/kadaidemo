@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "sub_small_categories")
+@Table(name = "small_categories")
 @Data
 public class SubSmallCategory {
 
