@@ -71,7 +71,13 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency>  
+        <!-- Spring Batch -->
+		<dependency>
+		    <groupId>org.springframework.batch</groupId>
+		    <artifactId>spring-batch-core</artifactId>
+		    <version>5.1.2</version> 
+		</dependency>
     </dependencies>
 
     <build>
@@ -83,4 +89,5 @@
         </plugins>
     </build>
 </project>
+
 

@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>管理者編集画面</title>
+	<link rel="stylesheet" href="/form-styles.css"> 
 </head>
 <body>
     <h1>管理者編集画面</h1>
-    <form action="@{admin/update}" th:object="${admin}" method="post">
-        <input type="hidden" th:field="*{id}" />
+	<form action="/admin/update" th:action="@{/admin/update}" th:object="${admin}" method="post">
+	    <input type="hidden" th:field="*{id}" />
+	    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
         <div>
             <label>店舗名</label>
             <select th:field="*{store.id}" required>
@@ -15,13 +17,20 @@
             </select>
             <span th:if="${#fields.hasErrors('store.id')}" th:errors="*{store.id}"></span>
         </div>
-        <div>
-            <label>権限</label>
-            <select th:field="*{posts}" required>
-                <option th:each="post : ${allPosts}" th:value="${post.id}" th:text="${post.name}"></option>
-            </select>
-            <span th:if="${#fields.hasErrors('posts')}" th:errors="*{posts}"></span>
-        </div>
+		<div>
+		    <label>役職</label>
+		    <select th:field="*{posts}" required>
+		        <option th:each="post : ${allPosts}" th:value="${post.id}" th:text="${post.name}"></option>
+		    </select>
+		    <span th:if="${#fields.hasErrors('posts')}" th:errors="*{posts}"></span>
+		</div>
+		<div>
+		    <label>権限</label>
+		    <select th:field="*{roles}" required>
+		        <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role.name}"></option>
+		    </select>
+		    <span th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></span>
+		</div>
         <div>
             <label>姓</label>
             <input type="text" th:field="*{lastName}" required />
@@ -37,13 +46,7 @@
             <input type="email" th:field="*{email}" required />
             <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
         </div>
-        <div>
-            <label>役職</label>
-            <select th:field="*{roles}" required>
-                <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role.name}"></option>
-            </select>
-            <span th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></span>
-        </div>
+
         <div>
             <label>電話番号</label>
             <input type="text" th:field="*{phone}" required />

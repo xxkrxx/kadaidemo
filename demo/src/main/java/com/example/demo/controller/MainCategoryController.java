@@ -69,5 +69,4 @@ public class MainCategoryController {
     	model.addAttribute("smallCategory", subSmallCategory);
     	return "SmallCategoryDetails";
     }
-
 }

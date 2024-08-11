@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品発注履歴</title>
+    <link rel="stylesheet" href="/productorder.css">
+</head>
+<body>
+    <h1>商品発注履歴</h1>
+    <p>ログイン中: 管理者 <span th:text="${adminFullName}"></span> | 店舗 <span th:text="${storeName}"></span></p>
+    <!-- 発注履歴 -->
+    <h3>発注履歴</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>発注ID</th>
+                <th>管理者</th>
+                <th>商品名</th>
+                <th>店舗名</th>
+                <th>発注数</th>
+                <th>合計金額</th>
+                <th>作成日時</th>
+                <th>更新日時</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}">発注ID</td>
+                <td th:text="${order.admin != null ? order.admin.firstName + ' ' + order.admin.lastName : 'N/A'}">管理者</td>
+				<td th:text="${order.productDetail != null ? order.productDetail.productName : 'N/A'}">商品名</td>
+				<td th:text="${order.store != null ? order.store.name : 'N/A'}">店舗名</td>
+                <td th:text="${order.quantity}">発注数</td>
+                <td th:text="${order.totalPrice}">合計金額</td>
+                <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'yyyy/MM/dd HH:mm:ss') : 'N/A'}">作成日時</td>
+                <td th:text="${order.updatedAt != null ? #temporals.format(order.updatedAt, 'yyyy/MM/dd HH:mm:ss') : 'N/A'}">更新日時</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

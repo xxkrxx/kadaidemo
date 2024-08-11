@@ -3,8 +3,6 @@ package com.example.demo.service.impl;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -14,36 +12,32 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Administrator;
 import com.example.demo.repository.AdministratorRepository;
-import com.example.demo.service.UserService;
+import com.example.demo.service.CustomUserDetailsService;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     private final AdministratorRepository administratorRepository;
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    public UserServiceImpl(AdministratorRepository administratorRepository) {
+    public CustomUserDetailsServiceImpl(AdministratorRepository administratorRepository) {
         this.administratorRepository = administratorRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        logger.debug("Attempting to load user by email: {}", email);
+        // メールアドレスでユーザーを検索し、見つからない場合は例外をスロー
         Administrator administrator = administratorRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        logger.debug("Found administrator: {}", administrator);
-        logger.debug("Administrator password: {}", administrator.getPassword());
-
-        UserDetails userDetails = new User(administrator.getEmail(), administrator.getPassword(), getAuthorities(administrator));
-        logger.debug("UserDetails created: {}", userDetails);
-
-        return userDetails;
+        // ユーザーの詳細情報をSpring SecurityのUserオブジェクトとして返す
+        return new User(administrator.getEmail(), administrator.getPassword(), getAuthorities(administrator));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Administrator administrator) {
+        // ユーザーのロールをGrantedAuthorityのコレクションに変換
         return administrator.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
     }
 }
+

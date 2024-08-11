@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>ユーザー新規作成</title>
+	<link rel="stylesheet" href="/form-styles.css">
 </head>
 <body>
     <h1>ユーザー新規作成</h1>
@@ -30,7 +31,7 @@
             <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
         </div>
         <div>
-            <label for="roles">役職:</label>
+            <label for="roles">権限:</label>
             <select id="roles" th:field="*{roles}" required>
                 <option value="" disabled selected>選択してください</option>
                 <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role.name}"></option>
@@ -38,10 +39,10 @@
             <span th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></span>
         </div>
         <div>
-            <label for="posts">権限:</label>
+            <label for="posts">役職:</label>
             <select id="posts" th:field="*{posts}" required>
                 <option value="" disabled selected>選択してください</option>
-                <option th:each="post : ${allPermissions}" th:value="${post.id}" th:text="${post.name}"></option>
+                <option th:each="post : ${allPosts}" th:value="${post.id}" th:text="${post.name}"></option>
             </select>
             <span th:if="${#fields.hasErrors('posts')}" th:errors="*{posts}"></span>
         </div>

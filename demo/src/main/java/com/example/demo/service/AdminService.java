@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.example.demo.entity.Administrator;
 import com.example.demo.entity.Post;
@@ -34,5 +33,5 @@ public interface AdminService {
     Store saveStore(Store store);
     
     // メールで管理者を検索する
-    Optional<Administrator> findByEmail(String email);
+    Administrator findByEmail(String email);
 }

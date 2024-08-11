@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.entity.Administrator;
 import com.example.demo.entity.Post;
+import com.example.demo.entity.Role;
 import com.example.demo.service.AdminService;
 import com.example.demo.service.PostService;
 import com.example.demo.service.RoleService;
@@ -73,7 +74,7 @@ public class AdminController {
         logger.debug("すべての管理者のリストを取得しています");
         model.addAttribute("admins", adminService.getAllAdmins());
         addCurrentAdminDetailsToModel(model);
-        model.addAttribute("message", "管理者一覧を表示しています"); 
+        model.addAttribute("message", "管理者一覧を表示しています");
         return "AdminList";
     }
 
@@ -95,15 +96,33 @@ public class AdminController {
         model.addAttribute("admin", admin);
         model.addAttribute("allStores", storeService.getAllStores());
         model.addAttribute("allRoles", roleService.getAllRoles());
-        model.addAttribute("allposts", postService.getAllPosts());
+        model.addAttribute("allPosts", postService.getAllPosts());
         return "AdminEdit";
     }
 
-    // 管理者の更新処理
+	// 管理者の更新処理（パスワードをエンコードして保存する処理も追加）
     @PostMapping("/update")
     public String updateAdmin(@Valid Administrator admin, BindingResult result, Model model) {
-        return processAdminForm(admin, result, model, "AdminEdit");
+        if (result.hasErrors()) {
+            // エラーメッセージがある場合、フォームに戻す
+            prepareAdminFormModel(model, admin);
+            return "AdminEdit";
+        }
+
+        // パスワードをエンコードして保存
+        if (!admin.getPassword().isEmpty()) {
+            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        } else {
+            // パスワードが空白の場合、既存のパスワードを保持
+            Administrator existingAdmin = adminService.getAdminById(admin.getId());
+            admin.setPassword(existingAdmin.getPassword());
+        }
+
+        // 管理者情報を更新
+        adminService.registerOrUpdateAdministrator(admin);
+        return "redirect:/admin/details/" + admin.getId();
     }
+
 
     // 管理者の削除処理
     @GetMapping("/delete/{id}")
@@ -111,7 +130,7 @@ public class AdminController {
         logger.debug("ID: {} の管理者の削除を試みています", id);
         adminService.deleteAdminById(id);
         logger.debug("ID: {} の管理者が正常に削除されました", id);
-        return "redirect:/AdminList";
+        return "redirect:/admin/list";
     }
 
     // 管理者作成ページを表示
@@ -121,14 +140,22 @@ public class AdminController {
         model.addAttribute("admin", new Administrator());
         model.addAttribute("allStores", storeService.getAllStores());
         model.addAttribute("allRoles", roleService.getAllRoles());
-        model.addAttribute("allposts", postService.getAllPosts());
+        model.addAttribute("allPosts", postService.getAllPosts());
         return "AdminCreate";
     }
 
-    // 管理者の作成処理
     @PostMapping("/create")
     public String createAdmin(@Valid Administrator admin, BindingResult result, Model model) {
-        return processAdminForm(admin, result, model, "AdminCreate");
+        if (result.hasErrors()) {
+            prepareAdminFormModel(model, admin);
+            return "AdminCreate";
+        }
+        
+        // 新しい管理者に "管理者" ロールを付与
+        Role adminRole = roleService.findByName("管理者").orElseThrow(() -> new RuntimeException("ロールが見つかりません"));
+        admin.getRoles().add(adminRole);
+        adminService.registerOrUpdateAdministrator(admin);
+        return "redirect:/admin/details/" + admin.getId();
     }
 
     // 管理者のフォーム処理を行う
@@ -178,37 +205,31 @@ public class AdminController {
         return "redirect:/admin/details/" + admin.getId();
     }
 
-	 // 現在の管理者の詳細をモデルに追加
+    // 現在の管理者の詳細をモデルに追加
     private void addCurrentAdminDetailsToModel(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Optional<Administrator> currentAdminOpt = adminService.findByEmail(userDetails.getUsername());
+            Optional<Administrator> currentAdminOpt = Optional.ofNullable(adminService.findByEmail(userDetails.getUsername()));
             if (currentAdminOpt.isPresent()) {
                 Administrator currentAdmin = currentAdminOpt.get();
-                boolean isAdmin = currentAdmin.getPosts().stream()
-                    .anyMatch(post -> "管理者".equals(post.getName()));
-                logger.debug("isAdmin: {}", isAdmin);
+                boolean isAdmin = currentAdmin.getRoles().stream()
+                    .anyMatch(role -> "管理者".equals(role.getName()));
                 model.addAttribute("isAdmin", isAdmin);
             } else {
-                logger.debug("管理者が見つかりません: {}", userDetails.getUsername());
                 model.addAttribute("isAdmin", false);
             }
-        }else {
-            logger.debug("Authentication or Principal is null");
+        } else {
+            model.addAttribute("isAdmin", false);
         }
-        // ログを追加してモデルの内容を確認
-        logger.debug("Model attributes: {}", model.asMap());
     }
-
 
     // 管理者フォームのモデル準備
     private void prepareAdminFormModel(Model model, Administrator admin) {
         model.addAttribute("admin", admin);
         model.addAttribute("allStores", storeService.getAllStores());
         model.addAttribute("allRoles", roleService.getAllRoles());
-        model.addAttribute("allposts", postService.getAllPosts());
+        model.addAttribute("allPosts", postService.getAllPosts());
     }
 }
-
 

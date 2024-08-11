@@ -45,6 +45,7 @@ public class AdminServiceImpl implements AdminService {
     public void registerOrUpdateAdministrator(Administrator admin) {
         logger.debug("Starting registerOrUpdateAdministrator with admin: {}", admin);
 
+        // 新しい管理者のパスワードをエンコード
         if (admin.getId() == null && admin.getPassword() != null && !admin.getPassword().isEmpty()) {
             logger.debug("Encoding password for new admin: {}", admin.getEmail());
             String encodedPassword = passwordEncoder.encode(admin.getPassword());
@@ -52,6 +53,7 @@ public class AdminServiceImpl implements AdminService {
             admin.setPassword(encodedPassword);
         }
 
+        // 既存の管理者のパスワードをエンコード（もし未エンコードの場合）
         if (admin.getId() != null && admin.getPassword() != null && !admin.getPassword().startsWith("$2a$")) {
             logger.debug("Encoding existing password for admin: {}", admin.getEmail());
             String encodedPassword = passwordEncoder.encode(admin.getPassword());
@@ -59,15 +61,18 @@ public class AdminServiceImpl implements AdminService {
             admin.setPassword(encodedPassword);
         }
 
+        // 新しいストアの保存
         if (admin.getStore() != null && admin.getStore().getId() == null) {
             logger.debug("Saving new store: {}", admin.getStore());
             Store savedStore = storeRepository.save(admin.getStore());
             admin.setStore(savedStore);
         }
 
+        // ロールが設定されていない場合、デフォルトロールを設定
         if (admin.getRoles() == null || admin.getRoles().isEmpty()) {
             logger.debug("Setting default role for admin: {}", admin.getEmail());
-            Role defaultRole = roleRepository.findByName("店長");
+            Optional<Role> optionalDefaultRole = roleRepository.findByName("管理者"); // デフォルトロール名を指定
+            Role defaultRole = optionalDefaultRole.orElseThrow(() -> new RuntimeException("デフォルトロールが見つかりません"));
             Set<Role> roles = new HashSet<>();
             roles.add(defaultRole);
             admin.setRoles(roles);
@@ -113,9 +118,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Optional<Administrator> findByEmail(String email) {
-        return adminRepository.findByEmail(email);
+    public Administrator findByEmail(String email) {
+        logger.debug("Fetching administrator with email: {}", email);
+        return adminRepository.findByEmail(email).orElse(null);
     }
 }
+
 
 

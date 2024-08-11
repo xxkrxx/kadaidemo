@@ -8,6 +8,7 @@
 <body>
     <h1>管理者一覧画面</h1>
     <p th:text="${message}"></p>
+
     <table>
         <thead>
             <tr>
@@ -38,13 +39,13 @@
             </tr>
         </tbody>
     </table>
-    <div th:if="${isAdmin}">
-        <a th:href="@{/admin/create}" class="button">新規作成</a>
-    </div>
-    <div>
-        <p>isAdmin: <span th:text="${isAdmin}"></span></p> <!-- isAdmin の値を表示 -->
-    </div>
+	<!-- 新規作成ボタンを表示するための条件 -->
+	<div th:if="${isAdmin}">
+	    <a th:href="@{/admin/create}" class="button">新規作成</a>
+	</div>
 </body>
 </html>
+
+
 
 

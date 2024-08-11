@@ -26,27 +26,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // リクエストの認可設定
             .authorizeHttpRequests(authz -> authz
-                // 特定のパスに対するアクセスを許可
-                .requestMatchers("/admin/signin", "/css/**", "/images/**", "/admin/forgetPassword", "/contact").permitAll()
-                // 認証が必要なパスを設定
-                .requestMatchers("/admin/edit/**", "/admin/list", "/admin/create").authenticated()
-                // その他のすべてのリクエストも認証が必要
+                .requestMatchers("/admin/signin", "/signin.css","/admin/forgetPassword", "/api/orders", "/api/products").permitAll()
                 .anyRequest().authenticated()
             )
-            // フォームログインの設定
             .formLogin(form -> form
-                .loginPage("/admin/signin") // ログインページの指定
-                .defaultSuccessUrl("/admin/top", true) // ログイン成功後のリダイレクト先
-                .failureUrl("/admin/signin?error") // ログイン失敗後のリダイレクト先
-                .permitAll() // ログインページはすべてのユーザーに許可
+                .loginPage("/admin/signin")
+                .defaultSuccessUrl("/admin/top", true)
+                .failureUrl("/admin/signin?error")
+                .permitAll()
             )
-            // ログアウトの設定
             .logout(logout -> logout
-                .permitAll() // ログアウトページもすべてのユーザーに許可
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/admin/signin")
+                    .permitAll()
             );
-        return http.build(); // HttpSecurity設定を構築して返す
+        return http.build();
     }
 
     @Bean

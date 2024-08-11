@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品詳細</title>
+    <link rel="stylesheet" href="/productorder.css">
+    <script>
+        function navigateToOrderForm(productId) {
+            console.log("発注するボタンがクリックされました。");
+            console.log("Product ID: " + productId);
+            location.href = '/orders/new?productDetailId=' + productId; // 修正: productId → productDetailId
+        }
+    </script>
+</head>
+<body>
+    <h1>商品詳細</h1>
+    <div>
+        <div>
+            <label>商品ID:</label>
+            <span th:text="${product.id}"></span>
+        </div>
+        <div>
+            <label>商品名:</label>
+            <span th:text="${product.name}"></span>
+        </div>
+        <div>
+            <label>説明:</label>
+            <span th:text="${product.description}"></span>
+        </div>
+        <div>
+            <label>商品画像:</label>
+            <img th:src="@{${product.imageUrl}}" alt="商品画像"/>
+        </div>
+        <div>
+            <label>販売価格:</label>
+            <span th:text="${product.price}"></span>
+        </div>
+        <div>
+            <label>在庫数:</label>
+            <span th:text="${product.stock}"></span>
+        </div>
+        <div>
+            <label>仕入れ原価:</label>
+            <span th:text="${product.costPrice}"></span>
+        </div>
+        <div>
+            <label>メーカー希望小売価格:</label>
+            <span th:text="${product.manufacturerSuggestedRetailPrice}"></span>
+        </div>
+        <div>
+            <label>大カテゴリ:</label>
+            <span th:text="${product.largeCategory.name}"></span>
+        </div>
+        <div>
+            <button type="button" th:onclick="'navigateToOrderForm(' + ${product.id} + ')'">発注する</button>
+        </div>
+        <div>
+            <a href="/products/list">商品リストに戻る</a>
+        </div>
+    </div>
+</body>
+</html>
+

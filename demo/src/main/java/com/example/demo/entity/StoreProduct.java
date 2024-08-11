@@ -25,46 +25,64 @@ public class StoreProduct {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "store_id") // store_id 列でStoreエンティティと結合
     @ToString.Exclude
-    private Store store;
+    private Store store; // Storeエンティティとの多対一のリレーション
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "product_id") // product_id 列でProductエンティティと結合
+    private Product product; // Productエンティティとの多対一のリレーション
 
     @Column(name = "retail_price", nullable = false)
-    private int retailPrice;
+    private int retailPrice; // 小売価格
 
     @Column(name = "stock", nullable = false)
-    private int stock;
+    private int stock; // 在庫数
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // 作成日時
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt; // 更新日時
+
+    // デフォルトコンストラクター
+    public StoreProduct() {
+    }
+
+    // ProductからStoreProductを作成するためのコンストラクター
+    public StoreProduct(Product product, int retailPrice, int stock, Store store) {
+        this.product = product;
+        this.retailPrice = retailPrice;
+        this.stock = stock;
+        this.store = store;
+    }
 
     @PrePersist
     protected void onCreate() {
+        // レコード作成前に呼ばれるメソッド
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
+        // レコード更新前に呼ばれるメソッド
         this.updatedAt = LocalDateTime.now();
     }
-    
+
     @Override
     public String toString() {
-        return "StoreProduct{id=" + id + 
-                ", product=" + (product != null ? product.getName() : "null") + 
-                ", retailPrice=" + retailPrice + 
-                ", stock=" + stock + 
-                ", createdAt=" + createdAt + 
+        // カスタムtoStringメソッド
+        return "StoreProduct{id=" + id +
+                ", product=" + (product != null ? product.getName() : "null") +
+                ", retailPrice=" + retailPrice +
+                ", stock=" + stock +
+                ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt + '}';
     }
 }
+
+
+
 
 

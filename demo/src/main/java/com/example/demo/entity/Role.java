@@ -10,12 +10,14 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Table(name = "roles")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 public class Role {
 
     @Id
@@ -28,4 +30,9 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     @ToString.Exclude
     private Set<Administrator> administrators;
+
+    // 引数付きコンストラクタを追加
+    public Role(String name) {
+        this.name = name;
+    }
 }

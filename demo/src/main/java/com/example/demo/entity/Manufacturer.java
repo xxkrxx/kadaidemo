@@ -1,11 +1,13 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +18,6 @@ import lombok.Data;
 @Data
 public class Manufacturer {
 
-    // IDフィールド。データベースの自動生成戦略で値が設定
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,11 +27,12 @@ public class Manufacturer {
     @Size(min = 1, max = 255)
     private String name;
 
-    // レコードの作成日時。エンティティが新しく挿入されるときに設定
     private LocalDateTime createdAt;
 
-    // レコードの最終更新日時。エンティティが更新されるたびに設定
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "manufacturer") // 一対多のリレーションを示すアノテーション。多くのProductが一つのManufacturerに属する
+    private List<Product> products;
 
     // エンティティが新しく挿入される前に呼ばれるメソッド。
     // このメソッドで、作成日時と更新日時を現在の日時に設定
@@ -47,3 +49,4 @@ public class Manufacturer {
         this.updatedAt = LocalDateTime.now();
     }
 }
+
