@@ -36,8 +36,4 @@ public class Product {
     @ManyToOne
     @JsonBackReference // SmallCategoryエンティティへの参照を管理
     private SmallCategory smallCategory; // 小カテゴリー
-
-    @ManyToOne
-    @JsonBackReference // Manufacturerエンティティへの参照を管理
-    private Manufacturer manufacturer; // メーカー
 }

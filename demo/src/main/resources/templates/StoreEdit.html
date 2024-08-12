@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/store.css">
 </head>
 <body>
-    <h1>店舗編集</h1>
+    <h1>店舗編集画面</h1>
     <form th:action="@{/stores/{id}/edit(id=${store.id})}" method="post" th:object="${store}">
         <div>
             <label for="name">店舗名</label>
