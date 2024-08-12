@@ -1,13 +1,11 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotBlank;
@@ -31,9 +29,6 @@ public class Manufacturer {
 
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "manufacturer") // 一対多のリレーションを示すアノテーション。多くのProductが一つのManufacturerに属する
-    private List<Product> products;
-
     // エンティティが新しく挿入される前に呼ばれるメソッド。
     // このメソッドで、作成日時と更新日時を現在の日時に設定
     @PrePersist
@@ -49,4 +44,5 @@ public class Manufacturer {
         this.updatedAt = LocalDateTime.now();
     }
 }
+
 
