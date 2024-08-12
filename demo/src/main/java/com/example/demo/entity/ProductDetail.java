@@ -29,8 +29,6 @@ public class ProductDetail {
     @Column(name = "small_category_id")
     private Long smallCategoryId; // 小カテゴリーID、外部キーとして使用
 
-    @Column(name = "manufacturer_id")
-    private Long manufacturerId; // メーカーID、外部キーとして使用
 
     @Column(name = "product_name")
     private String productName; // 商品名
