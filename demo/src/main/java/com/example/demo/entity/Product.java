@@ -1,12 +1,17 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Entity
@@ -24,6 +29,10 @@ public class Product {
     private Double costPrice; // 仕入れ原価
     private Double manufacturerSuggestedRetailPrice; // メーカー希望小売価格
     private String imageUrl; // 商品画像のURL
+    
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonManagedReference // Orderエンティティとの双方向リレーションを管理するために使用
+    private List<Order> orders; // この商品詳細に関連する注文のリスト
 
     @ManyToOne
     @JsonBackReference // LargeCategoryエンティティへの参照を管理

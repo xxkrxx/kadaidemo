@@ -24,20 +24,4 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     public void saveProductDetail(ProductDetail productDetail) {
         productDetailRepository.save(productDetail);
     }
-
-    @Override
-    public void updateStock(Long productDetailId, int quantity) {
-        Optional<ProductDetail> productDetailOpt = productDetailRepository.findById(productDetailId);
-        if (productDetailOpt.isPresent()) {
-            ProductDetail productDetail = productDetailOpt.get();
-            int newStock = productDetail.getStock() + quantity;
-            if (newStock < 0) {
-                throw new IllegalArgumentException("Insufficient stock for the product detail.");
-            }
-            productDetail.setStock(newStock);
-            productDetailRepository.save(productDetail);
-        } else {
-            throw new IllegalArgumentException("Product detail not found.");
-        }
-    }
 }

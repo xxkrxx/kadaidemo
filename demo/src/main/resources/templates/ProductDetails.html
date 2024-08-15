@@ -8,7 +8,8 @@
         function navigateToOrderForm(productId) {
             console.log("発注するボタンがクリックされました。");
             console.log("Product ID: " + productId);
-            location.href = '/orders/new?productDetailId=' + productId; // 修正: productId → productDetailId
+            // クエリパラメータとして `productId` を URL に渡す
+            window.location.href = '/orders/new?productId=' + productId;
         }
     </script>
 </head>
@@ -29,7 +30,7 @@
         </div>
         <div>
             <label>商品画像:</label>
-            <img th:src="@{${product.imageUrl}}" alt="商品画像"/>
+            <img th:src="@{|${product.imageUrl}|}" alt="商品画像"/>
         </div>
         <div>
             <label>販売価格:</label>
@@ -52,7 +53,8 @@
             <span th:text="${product.largeCategory.name}"></span>
         </div>
         <div>
-            <button type="button" th:onclick="'navigateToOrderForm(' + ${product.id} + ')'">発注する</button>
+            <!-- 正しく ID を渡せるよう修正 -->
+			<button type="button" th:onclick="'navigateToOrderForm(' + ${product.id} + ')'">発注する</button>
         </div>
         <div>
             <a href="/products/list">商品リストに戻る</a>

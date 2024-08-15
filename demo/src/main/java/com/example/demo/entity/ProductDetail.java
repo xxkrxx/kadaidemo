@@ -1,17 +1,12 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -45,18 +40,11 @@ public class ProductDetail {
     @Column(name = "retail_price")
     private Double retailPrice; // 小売価格
 
-    @Column(name = "stock")
-    private int stock; // 在庫数を管理するフィールドを追加
-
     @Column(name = "created_at")
     private LocalDateTime createdAt; // 作成日時
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // 更新日時
-
-    @OneToMany(mappedBy = "productDetail", cascade = CascadeType.ALL)
-    @JsonManagedReference // Orderエンティティとの双方向リレーションを管理するために使用
-    private List<Order> orders; // この商品詳細に関連する注文のリスト
 
     @PrePersist
     public void prePersist() {
@@ -67,15 +55,6 @@ public class ProductDetail {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now(); // エンティティが更新される前に更新日時を設定
-    }
-
-    // 在庫数のゲッターとセッターを追加
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
     }
 }
 

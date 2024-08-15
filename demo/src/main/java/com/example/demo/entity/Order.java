@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "`order`")
+@Table(name = "`order`") // テーブル名をバックティックで囲む
 @Data
 public class Order {
 
@@ -35,9 +35,9 @@ public class Order {
     private Store store;
 
     @ManyToOne
-    @JoinColumn(name = "product_detail_id")
-    @JsonBackReference // ProductDetailエンティティへの参照を管理
-    private ProductDetail productDetail;
+    @JoinColumn(name = "product_id")
+    @JsonBackReference // Productエンティティへの参照を管理
+    private Product product;
 
     private int quantity; // 発注数
     private double totalPrice; // 合計金額
@@ -55,3 +55,5 @@ public class Order {
         this.updatedAt = LocalDateTime.now();
     }
 }
+
+

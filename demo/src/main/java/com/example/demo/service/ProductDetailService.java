@@ -12,6 +12,4 @@ public interface ProductDetailService {
     // 商品詳細を保存または更新します
     void saveProductDetail(ProductDetail productDetail);
 
-    // 在庫を更新するメソッド
-    void updateStock(Long productDetailId, int quantity);
 }

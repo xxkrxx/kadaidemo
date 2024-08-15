@@ -11,14 +11,14 @@
     <div class="order-form-container">
         <form th:action="@{/orders}" th:object="${order}" method="post">
             <!-- 商品IDを隠しフィールドとして送信 -->
-			<input type="hidden" name="productDetailId" th:value="${order.productDetail.id}" />
+            <input type="hidden" name="productId" th:value="${order.product.id}" />
             <div>
                 <label for="productId">商品ID:</label>
-                <span id="productId" th:text="${order.productDetail.id}"></span>
+                <span id="productId" th:text="${order.product.id}"></span>
             </div>
             <div>
                 <label for="name">商品名:</label>
-                <span id="name" th:text="${order.productDetail.productName}"></span>
+                <span id="name" th:text="${order.product.name}"></span>
             </div>
             <div>
                 <label for="quantity">発注数:</label>
@@ -38,4 +38,5 @@
         </form>
     </div>
 </body>
+</html>
 
