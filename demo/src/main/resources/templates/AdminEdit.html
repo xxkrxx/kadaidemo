@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>管理者編集画面</title>
+    <title>ユーザー編集画面</title>
 	<link rel="stylesheet" href="/form-styles.css"> 
 </head>
 <body>
-    <h1>管理者編集画面</h1>
+    <h1>ユーザー編集画面</h1>
 	<form action="/admin/update" th:action="@{/admin/update}" th:object="${admin}" method="post">
 	    <input type="hidden" th:field="*{id}" />
 	    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
