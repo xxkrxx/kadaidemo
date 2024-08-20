@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.entity.Product;
+import com.example.demo.entity.StoreProduct;
 import com.example.demo.repository.LargeCategoryRepository;
 import com.example.demo.repository.MiddleCategoryRepository;
 import com.example.demo.repository.SmallCategoryRepository;
@@ -43,11 +43,11 @@ public class ProductController {
                                @RequestParam(value = "middleCategoryId", required = false) Long middleCategoryId,
                                @RequestParam(value = "smallCategoryId", required = false) Long smallCategoryId,
                                @RequestParam(value = "page", defaultValue = "0") int page,
-                               @RequestParam(value = "size", defaultValue = "10") int size) {
+                               @RequestParam(value = "size", defaultValue = "5") int size) {
         // ページネーション用の Pageable オブジェクトを作成
         Pageable pageable = PageRequest.of(page, size);
         // 商品検索とフィルタリングを行い、指定ページの結果を取得
-        Page<Product> productPage = productService.findByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, pageable);
+        Page<StoreProduct> productPage = productService.findByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, pageable);
 
         // モデルにデータを追加
         model.addAttribute("productPage", productPage);
@@ -60,14 +60,14 @@ public class ProductController {
         model.addAttribute("smallCategoryId", smallCategoryId);
 
         // 商品一覧のビューを返す
-        return "ProductList";
+        return "productList";
     }
 
     // 商品詳細を表示するメソッド
     @GetMapping("/{id}")
     public String getProduct(@PathVariable Long id, Model model) {
         // 商品IDで商品情報を取得
-        Optional<Product> product = productService.getProductById(id);
+        Optional<StoreProduct> product = productService.getStoreProductById(id);
         if (product.isPresent()) {
             // 商品が見つかった場合、モデルに商品情報を追加
             model.addAttribute("product", product.get());
@@ -76,6 +76,6 @@ public class ProductController {
             model.addAttribute("errorMessage", "商品が見つかりませんでした。");
         }
         // 商品詳細のビューを返す
-        return "ProductDetails";
+        return "productDetails";
     }
 }

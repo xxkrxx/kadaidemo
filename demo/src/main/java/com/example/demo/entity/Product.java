@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -66,4 +67,9 @@ public class Product {
     @ManyToOne
     @JsonBackReference // SmallCategoryエンティティへの参照を管理
     private SmallCategory smallCategory; // 小カテゴリー
+
+    @ManyToOne
+    @JoinColumn(name = "store_id") // 店舗情報を持つための関連
+    private Store store; // 店舗情報
 }
+

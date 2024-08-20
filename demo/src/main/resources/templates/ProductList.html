@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>商品リスト</title>
-	<link rel="stylesheet" href="/productorder.css">
+    <link rel="stylesheet" href="/productorder.css">
 </head>
 <body>
     <h1>商品リスト</h1>
@@ -38,6 +38,7 @@
             <button type="submit">検索</button>
         </div>
     </form>
+    
     <div>
         <table>
             <thead>
@@ -46,32 +47,39 @@
                     <th>商品の説明</th>
                     <th>仕入れ原価</th>
                     <th>メーカー希望小売価格</th>
-                    <th>大カテゴリ</th>
-                    <th>中カテゴリ</th>
-                    <th>小カテゴリ</th>
                     <th>販売価格</th>
                     <th>在庫数</th>
                     <th>詳細を見る</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="product : ${productPage.content}">
-                    <td th:text="${product.name}">商品名</td>
-                    <td th:text="${product.description}">商品説明</td>
-                    <td th:text="${product.costPrice}">仕入れ原価</td>
-                    <td th:text="${product.manufacturerSuggestedRetailPrice}">メーカー希望小売価格</td>
-                    <td th:text="${product.largeCategory.name}">大カテゴリ</td>
-                    <td th:text="${product.middleCategory.name}">中カテゴリ</td>
-                    <td th:text="${product.smallCategory.name}">小カテゴリ</td>
-                    <td th:text="${product.price}">販売価格</td>
-                    <td th:text="${product.stock}">在庫数</td>                    
-                    <td><a th:href="@{/products/{id}(id=${product.id})}">詳細を見る</a></td>
+                <tr th:each="storeProduct : ${productPage.content}">
+                    <td th:text="${storeProduct.product.name}">商品名</td>
+                    <td th:text="${storeProduct.product.description}">商品の説明</td>
+                    <td th:text="${storeProduct.product.costPrice}">仕入れ原価</td>
+                    <td th:text="${storeProduct.product.manufacturerSuggestedRetailPrice}">メーカー希望小売価格</td>
+                    <td th:text="${storeProduct.retailPrice}">販売価格</td>
+                    <td th:text="${storeProduct.stock}">在庫数</td>
+                    <td><a th:href="@{/products/{id}(id=${storeProduct.id})}">詳細を見る</a></td>
                 </tr>
             </tbody>
         </table>
-
-        <div>
-            <span>ページ: <span th:text="${productPage.number + 1}"></span> / <span th:text="${productPage.totalPages}"></span></span>
+        
+        <div class="pagination">
+            <span>ページ <span th:text="${productPage.number + 1}"></span> / <span th:text="${productPage.totalPages}"></span></span>
+            
+            <ul>
+                <li th:if="${productPage.hasPrevious()}">
+                    <a th:href="@{/products/list(size=${productPage.size}, page=${productPage.number - 1}, search=${search}, largeCategoryId=${largeCategoryId}, middleCategoryId=${middleCategoryId}, smallCategoryId=${smallCategoryId})}">前</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(1, productPage.totalPages)}">
+                    <a th:if="${i != productPage.number + 1}" th:href="@{/products/list(size=${productPage.size}, page=${i - 1}, search=${search}, largeCategoryId=${largeCategoryId}, middleCategoryId=${middleCategoryId}, smallCategoryId=${smallCategoryId})}" th:text="${i}"></a>
+                    <span th:if="${i == productPage.number + 1}" th:text="${i}"></span>
+                </li>
+                <li th:if="${productPage.hasNext()}">
+                    <a th:href="@{/products/list(size=${productPage.size}, page=${productPage.number + 1}, search=${search}, largeCategoryId=${largeCategoryId}, middleCategoryId=${middleCategoryId}, smallCategoryId=${smallCategoryId})}">次</a>
+                </li>
+            </ul>
         </div>
         <div>
             <a th:href="@{/orders/history}">注文履歴を見る</a>
@@ -79,6 +87,5 @@
     </div>
 </body>
 </html>
-
 
 

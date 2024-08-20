@@ -18,75 +18,56 @@ import com.example.demo.service.ProductService;
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
-    private ProductRepository productRepository; 
+    private StoreProductRepository storeProductRepository; // StoreProductリポジトリのインジェクション
 
     @Autowired
-    private StoreProductRepository storeProductRepository; 
+    private ProductRepository productRepository; // Productリポジトリのインジェクション
 
-    // 全てのProductをページング対応で取得
+    // ページネーションされたStoreProductのリストを取得
     @Override
-    public Page<Product> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable);
+    public Page<StoreProduct> getAllProducts(Pageable pageable) {
+        return storeProductRepository.findAll(pageable);
     }
 
-    // 検索条件に基づいてページング対応でProductを取得
+    // 検索条件に基づいてページネーションされたStoreProductのリストを取得
     @Override
-    public Page<Product> findByCriteria(String search, Long largeCategoryId, Long middleCategoryId, Long smallCategoryId, Pageable pageable) {
-        return productRepository.findProductsByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, pageable); // 検索条件に基づいてProductを取得
+    public Page<StoreProduct> findByCriteria(String search, Long largeCategoryId, Long middleCategoryId, Long smallCategoryId, Pageable pageable) {
+        return storeProductRepository.findByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, pageable);
     }
 
-    // IDでProductを取得
+    // 指定されたIDのStoreProductを取得
+    @Override
+    public Optional<StoreProduct> getStoreProductById(Long id) {
+        return storeProductRepository.findById(id);
+    }
+
+    // 指定されたIDのProductを取得
     @Override
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
-    // Productを保存
+    // StoreProductを保存
     @Override
-    public void saveProduct(Product product) {
-        productRepository.save(product); 
+    public void saveProduct(StoreProduct storeProduct) {
+        storeProductRepository.save(storeProduct);
     }
 
-    // 指定されたIDのProductの在庫を更新
+    // 指定されたStoreProductのIDの在庫数量を更新
     @Override
-    public void updateStock(Long productId, int quantity) {
-        Optional<Product> productOpt = productRepository.findById(productId); 
-        if (productOpt.isPresent()) { // Productが存在する場合
-            Product product = productOpt.get();
-            product.setStock(product.getStock() + quantity); // 在庫数を更新
-            productRepository.save(product); // 更新されたProductを保存
+    public void updateStock(Long storeProductId, int quantity) {
+        Optional<StoreProduct> productOpt = storeProductRepository.findById(storeProductId);
+        if (productOpt.isPresent()) {
+            StoreProduct product = productOpt.get();
+            product.setStock(product.getStock() + quantity); // 在庫数量を更新
+            storeProductRepository.save(product); // 更新されたStoreProductを保存
         }
     }
 
-    // 全てのProductを取得
-    @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll(); 
-    }
-
-    // IDでStoreProductを取得
-    @Override
-    public Optional<StoreProduct> getStoreProductById(Long id) {
-        return storeProductRepository.findById(id); 
-    }
-
-    // StoreProductを保存
-    @Override
-    public void saveStoreProduct(StoreProduct storeProduct) {
-        storeProductRepository.save(storeProduct); 
-    }
-
-    // 全てのStoreProductを取得
+    // すべてのStoreProductを取得
     @Override
     public List<StoreProduct> getAllStoreProducts() {
-        return storeProductRepository.findAll(); 
-    }
-
-    // 小カテゴリIDで商品を取得するメソッドを実装
-    @Override
-    public List<Product> findBySmallCategoryId(Long smallCategoryId) {
-        return productRepository.findBySmallCategoryId(smallCategoryId);
+        return storeProductRepository.findAll();
     }
 }
-
 

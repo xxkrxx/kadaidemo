@@ -8,8 +8,7 @@
         function navigateToOrderForm(productId) {
             console.log("発注するボタンがクリックされました。");
             console.log("Product ID: " + productId);
-            // クエリパラメータとして `productId` を URL に渡す
-            window.location.href = '/orders/new?productId=' + productId;
+            window.location.href = '/orders/new?productId=' + encodeURIComponent(productId);
         }
     </script>
 </head>
@@ -17,47 +16,34 @@
     <h1>商品詳細画面</h1>
     <div>
         <div>
-            <label>商品ID:</label>
-            <span th:text="${product.id}"></span>
-        </div>
-        <div>
             <label>商品名:</label>
-            <span th:text="${product.name}"></span>
+            <span th:text="${product.product.name}">商品名</span>
         </div>
         <div>
-            <label>説明:</label>
-            <span th:text="${product.description}"></span>
-        </div>
-        <div>
-            <label>商品画像:</label>
-            <img th:src="@{|${product.imageUrl}|}" alt="商品画像"/>
-        </div>
-        <div>
-            <label>販売価格:</label>
-            <span th:text="${product.price}"></span>
-        </div>
-        <div>
-            <label>在庫数:</label>
-            <span th:text="${product.stock}"></span>
+            <label>商品の説明:</label>
+            <span th:text="${product.product.description}">商品の説明</span>
         </div>
         <div>
             <label>仕入れ原価:</label>
-            <span th:text="${product.costPrice}"></span>
+            <span th:text="${product.product.costPrice}">仕入れ原価</span>
         </div>
         <div>
             <label>メーカー希望小売価格:</label>
-            <span th:text="${product.manufacturerSuggestedRetailPrice}"></span>
+            <span th:text="${product.product.manufacturerSuggestedRetailPrice}">メーカー希望小売価格</span>
         </div>
         <div>
-            <label>大カテゴリ:</label>
-            <span th:text="${product.largeCategory.name}"></span>
+            <label>販売価格:</label>
+            <span th:text="${product.retailPrice}">販売価格</span>
         </div>
         <div>
-            <!-- 正しく ID を渡せるよう修正 -->
-			<button type="button" th:onclick="'navigateToOrderForm(' + ${product.id} + ')'">発注する</button>
+            <label>在庫数:</label>
+            <span th:text="${product.stock}">在庫数</span>
         </div>
         <div>
-            <a href="/products/list">商品リストに戻る</a>
+            <button th:attr="onclick=${'navigateToOrderForm(' + product.id + ')'}">発注する</button>
+        </div>
+        <div>
+            <a href="/products/list">商品一覧に戻る</a>
         </div>
     </div>
 </body>

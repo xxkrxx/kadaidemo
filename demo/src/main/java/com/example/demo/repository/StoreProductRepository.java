@@ -9,8 +9,8 @@ import org.springframework.data.repository.query.Param;
 import com.example.demo.entity.StoreProduct;
 
 public interface StoreProductRepository extends JpaRepository<StoreProduct, Long> {
-	
-	/* 検索条件に基づいて Product エンティティのページネーションされたリストを取得するメソッド*/
+    
+    /* 検索条件に基づいて StoreProduct エンティティのページネーションされたリストを取得するメソッド */
     @Query("SELECT sp FROM StoreProduct sp WHERE " +
            "(:search IS NULL OR sp.product.name LIKE %:search%) AND " +
            "(:largeCategoryId IS NULL OR sp.product.largeCategory.id = :largeCategoryId) AND " +

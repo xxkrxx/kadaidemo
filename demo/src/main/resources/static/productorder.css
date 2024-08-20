@@ -1,4 +1,4 @@
-@charset "UTF-8";
+/* 既存のスタイル */
 
 body {
     font-family: Arial, sans-serif;
@@ -61,25 +61,55 @@ th {
     background-color: #f2f2f2;
 }
 
-/* 商品詳細のスタイリング */
 div {
     margin-bottom: 15px;
 }
 
-/* 商品画像のスタイリング */
 img {
     max-width: 20%;
-    height: 20%; /* 高さは自動で調整 */
-    border: 1px solid #ddd; /* 画像の境界線 */
-    border-radius: 4px; /* 角の丸み */
+    height: auto; /* 高さは自動で調整 */
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
-/* リンクのスタイリング */
 a {
-    color: #007bff; /* リンクの文字色 */
-    text-decoration: none; /* 下線なし */
+    color: #007bff;
+    text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline; /* ホバー時に下線を表示 */
+    text-decoration: underline;
+}
+
+/* ページネーションのスタイリング */
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.pagination li {
+    display: inline;
+}
+
+.pagination a, .pagination span {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.pagination a:hover {
+    background-color: #f2f2f2;
+}
+
+.pagination span {
+    background-color: #f2f2f2;
+    color: #333;
 }

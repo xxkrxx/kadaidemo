@@ -25,4 +25,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                          @Param("middleCategoryId") Long middleCategoryId,
                                          @Param("smallCategoryId") Long smallCategoryId,
                                          Pageable pageable);
+
+    /* 特定の店舗に関連する商品のリストを取得するメソッド */
+    @Query("SELECT p FROM Product p WHERE p.store.id = :storeId")
+    List<Product> findByStoreId(@Param("storeId") Long storeId);
 }
+
