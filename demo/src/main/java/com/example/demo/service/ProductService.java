@@ -11,19 +11,28 @@ import com.example.demo.entity.StoreProduct;
 
 public interface ProductService {
 
+    // すべてのStoreProductをページングして取得
     Page<StoreProduct> getAllProducts(Pageable pageable);
 
-    Page<StoreProduct> findByCriteria(String search, Long largeCategoryId, Long middleCategoryId, Long smallCategoryId, Pageable pageable);
+    // 検索条件でフィルタリングしたStoreProductをページングして取得
+    Page<StoreProduct> findByCriteria(String search, Long largeCategoryId, Long middleCategoryId, Long smallCategoryId, Long storeId, Pageable pageable);
 
+    // IDでStoreProductを取得
     Optional<StoreProduct> getStoreProductById(Long id);
 
+    // IDでProductを取得
     Optional<Product> getProductById(Long id);
 
+    // StoreProductを保存
     void saveProduct(StoreProduct storeProduct);
 
+    // 在庫数量を更新
     void updateStock(Long storeProductId, int quantity);
 
-    // メソッドの戻り値型をList<StoreProduct>に変更
+    // すべてのStoreProductを取得
     List<StoreProduct> getAllStoreProducts();
+
+    // 店舗に関連する商品のリストを取得
+    List<Product> getProductsForStore(Long storeId);
 }
 

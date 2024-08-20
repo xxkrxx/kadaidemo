@@ -42,14 +42,12 @@ public class ProductController {
                                @RequestParam(value = "largeCategoryId", required = false) Long largeCategoryId,
                                @RequestParam(value = "middleCategoryId", required = false) Long middleCategoryId,
                                @RequestParam(value = "smallCategoryId", required = false) Long smallCategoryId,
+                               @RequestParam(value = "storeId", required = false) Long storeId, // 追加
                                @RequestParam(value = "page", defaultValue = "0") int page,
-                               @RequestParam(value = "size", defaultValue = "5") int size) {
-        // ページネーション用の Pageable オブジェクトを作成
+                               @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        // 商品検索とフィルタリングを行い、指定ページの結果を取得
-        Page<StoreProduct> productPage = productService.findByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, pageable);
+        Page<StoreProduct> productPage = productService.findByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, storeId, pageable);
 
-        // モデルにデータを追加
         model.addAttribute("productPage", productPage);
         model.addAttribute("largeCategories", largeCategoryRepository.findAll());
         model.addAttribute("middleCategories", middleCategoryRepository.findAll());
@@ -58,8 +56,8 @@ public class ProductController {
         model.addAttribute("largeCategoryId", largeCategoryId);
         model.addAttribute("middleCategoryId", middleCategoryId);
         model.addAttribute("smallCategoryId", smallCategoryId);
+        model.addAttribute("storeId", storeId); // 追加
 
-        // 商品一覧のビューを返す
         return "productList";
     }
 
