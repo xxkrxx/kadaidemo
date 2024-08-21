@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +26,10 @@ public interface StoreProductRepository extends JpaRepository<StoreProduct, Long
                                        @Param("storeId") Long storeId,
                                        Pageable pageable);
 
+    // 店舗IDでStoreProductをページングして取得するメソッド
     Page<StoreProduct> findByStoreId(Long storeId, Pageable pageable);
+
+    // 店舗IDで関連する全てのStoreProductを取得するメソッド
+    @Query("SELECT sp FROM StoreProduct sp WHERE sp.store.id = :storeId")
+    List<StoreProduct> findProductsByStoreId(@Param("storeId") Long storeId);
 }
