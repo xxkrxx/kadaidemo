@@ -37,12 +37,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<StoreProduct> findByCriteria(String search, Long largeCategoryId, Long middleCategoryId, Long smallCategoryId, Long storeId, Pageable pageable) {
-        if (storeId != null) {
-            return storeProductRepository.findByStoreId(storeId, pageable);
-        } else {
-            return storeProductRepository.findByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, null, pageable);
+        if (storeId == null) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            storeId = getCurrentUserStoreId(email);  // 現在ログイン中のユーザーの店舗IDを取得
         }
+        return storeProductRepository.findByStoreId(storeId, pageable);
     }
+
 
     @Override
     public Optional<StoreProduct> getStoreProductById(Long id) {
