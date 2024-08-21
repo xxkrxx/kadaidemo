@@ -2,7 +2,6 @@ package com.example.demo.service.impl;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,14 +36,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<StoreProduct> findByCriteria(String search, Long largeCategoryId, Long middleCategoryId, Long smallCategoryId, Long storeId, Pageable pageable) {
+        // StoreId が指定されていない場合、現在ログイン中のユーザーの店舗IDを取得
         if (storeId == null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
             storeId = getCurrentUserStoreId(email);  // 現在ログイン中のユーザーの店舗IDを取得
         }
-        return storeProductRepository.findByStoreId(storeId, pageable);
+        
+        // すべての検索条件を考慮して StoreProduct を検索
+        return storeProductRepository.findByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, storeId, pageable);
     }
-
 
     @Override
     public Optional<StoreProduct> getStoreProductById(Long id) {
@@ -72,37 +73,34 @@ public class ProductServiceImpl implements ProductService {
             }
             product.setStock(newStock);
             storeProductRepository.save(product);
+        } else {
+            throw new IllegalArgumentException("商品が見つかりませんでした");
         }
+    }
+
+    // 現在ログインしているユーザーの店舗IDを取得するメソッド
+    private Long getCurrentUserStoreId(String email) {
+        return administratorRepository.findByEmail(email)
+                .map(admin -> admin.getStore().getId())
+                .orElse(null);
     }
 
     @Override
     public List<StoreProduct> getAllStoreProducts() {
+        // すべての StoreProduct を取得して返す
         return storeProductRepository.findAll();
     }
 
     @Override
     public List<Product> getProductsForStore(Long storeId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName(); // ユーザーのメールアドレスを取得
-        
-        Long currentStoreId = getCurrentUserStoreId(email);
-
-        List<StoreProduct> storeProducts = storeProductRepository.findByStoreId(currentStoreId, Pageable.unpaged()).getContent();
-        return storeProducts.stream()
-                            .map(StoreProduct::getProduct)
-                            .collect(Collectors.toList());
-    }
-
-    private Long getCurrentUserStoreId(String email) {
-        return administratorRepository.findByEmail(email)
-                                      .map(admin -> admin.getStore().getId())
-                                      .orElseThrow(() -> new RuntimeException("ユーザーが見つかりません"));
+        // storeId に基づいて Product のリストを取得
+        return productRepository.findByStoreId(storeId);
     }
 
     @Override
     public Page<StoreProduct> findByStoreId(Long storeId, Pageable pageable) {
+        // storeId に基づいて StoreProduct のページネーションされたリストを取得
         return storeProductRepository.findByStoreId(storeId, pageable);
     }
 }
-
 
