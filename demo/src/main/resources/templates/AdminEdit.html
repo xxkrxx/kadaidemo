@@ -46,7 +46,6 @@
             <input type="email" th:field="*{email}" required />
             <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
         </div>
-
         <div>
             <label>電話番号</label>
             <input type="text" th:field="*{phone}" required />
@@ -54,10 +53,16 @@
         </div>
         <div>
             <label>パスワード</label>
-            <input type="password" th:field="*{password}" maxlength="64" required />
+            <input type="password" th:field="*{password}" maxlength="64" />
             <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
         </div>
         <button type="submit">更新する</button>
     </form>
+    
+    <!-- エラーメッセージの表示 -->
+    <div th:if="${errorMessage}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
 </body>
 </html>
+

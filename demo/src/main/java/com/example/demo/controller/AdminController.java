@@ -36,6 +36,7 @@ public class AdminController {
     private AdminService adminService;
 
     @Autowired
+    
     private StoreService storeService;
 
     @Autowired
@@ -101,25 +102,30 @@ public class AdminController {
         return "AdminEdit";
     }
 
-	// 管理者の更新処理（パスワードをエンコードして保存する処理も追加）
+    // 管理者の更新処理（パスワードをエンコードして保存する処理も追加）
     @PostMapping("/update")
-    public String updateAdmin(@Valid Administrator admin, BindingResult result, Model model) {
+    public String updateAdmin(@Valid Administrator admin, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            // エラーメッセージがある場合、フォームに戻す
             prepareAdminFormModel(model, admin);
             return "AdminEdit";
         }
 
-        // パスワードをエンコードして保存
+        // 既存の管理者と異なるメールアドレスが入力された場合の重複チェック
+        Administrator existingAdmin = adminService.getAdminById(admin.getId());
+        if (!admin.getEmail().equals(existingAdmin.getEmail()) && adminService.findByEmail(admin.getEmail()) != null) {
+            result.rejectValue("email", "error.admin", "このメールアドレスは既に使用されています。");
+            model.addAttribute("errorMessage", "このメールアドレスは既に使用されています。再度入力してください。");
+            prepareAdminFormModel(model, admin);
+            return "AdminEdit";
+        }
+
+        // パスワードのエンコード処理
         if (!admin.getPassword().isEmpty()) {
             admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         } else {
-            // パスワードが空白の場合、既存のパスワードを保持
-            Administrator existingAdmin = adminService.getAdminById(admin.getId());
             admin.setPassword(existingAdmin.getPassword());
         }
 
-        // 管理者情報を更新
         adminService.registerOrUpdateAdministrator(admin);
         return "redirect:/admin/details/" + admin.getId();
     }
