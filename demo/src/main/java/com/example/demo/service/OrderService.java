@@ -22,4 +22,7 @@ public interface OrderService {
 
     /* 指定されたユーザー名で管理者を検索 */
     Administrator findAdminByUsername(String username);
+    
+    /* 注文を作成するメソッド */
+    void createOrder(Long productId, Long storeId, int quantity);
 }

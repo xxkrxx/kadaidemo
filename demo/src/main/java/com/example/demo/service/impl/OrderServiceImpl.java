@@ -10,8 +10,10 @@ import com.example.demo.entity.Administrator;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.Store;
+import com.example.demo.entity.StoreProduct;
 import com.example.demo.repository.AdministratorRepository;
 import com.example.demo.repository.OrderRepository;
+import com.example.demo.repository.StoreProductRepository;
 import com.example.demo.service.OrderService;
 
 @Service
@@ -22,6 +24,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private AdministratorRepository administratorRepository;
+
+    @Autowired
+    private StoreProductRepository storeProductRepository; // 追加
 
     /*
      * 指定された Order オブジェクトを保存します。
@@ -34,7 +39,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Product product = order.getProduct();
-
         order.setTotalPrice(product.getCostPrice() * order.getQuantity()); // 合計金額を設定
         orderRepository.save(order); // 注文をデータベースに保存
     }
@@ -71,6 +75,32 @@ public class OrderServiceImpl implements OrderService {
     public Administrator findAdminByUsername(String username) {
         Optional<Administrator> adminOpt = administratorRepository.findByEmail(username);
         return adminOpt.orElseThrow(() -> new RuntimeException("指定されたユーザー名の管理者が見つかりません。"));
+    }
+
+    /*
+     * 商品の発注を作成します。店舗に紐づく商品かどうかを確認します。
+     */
+    @Override
+    public void createOrder(Long productId, Long storeId, int quantity) {
+        // StoreProductを取得
+        StoreProduct storeProduct = storeProductRepository.findByProductIdAndStoreId(productId, storeId);
+        
+        // 商品が存在しない、または在庫が不足している場合のエラーハンドリング
+        if (storeProduct == null || storeProduct.getStock() < quantity) {
+            throw new IllegalArgumentException("商品が見つからないか、在庫が不足しています。");
+        }
+
+        // 発注処理
+        Order order = new Order();
+        order.setProduct(storeProduct.getProduct()); // 商品をStoreProductから設定
+        order.setQuantity(quantity);
+        order.setTotalPrice(storeProduct.getRetailPrice() * quantity); // 合計金額を設定
+        order.setStore(storeProduct.getStore()); // 正しい店舗を設定
+
+        // 在庫を更新
+        storeProduct.setStock(storeProduct.getStock() - quantity);
+        orderRepository.save(order); // 注文をデータベースに保存
+        storeProductRepository.save(storeProduct); // 在庫を更新して保存
     }
 }
 

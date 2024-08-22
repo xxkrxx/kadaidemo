@@ -32,4 +32,6 @@ public interface StoreProductRepository extends JpaRepository<StoreProduct, Long
     // 店舗IDで関連する全てのStoreProductを取得するメソッド
     @Query("SELECT sp FROM StoreProduct sp WHERE sp.store.id = :storeId")
     List<StoreProduct> findProductsByStoreId(@Param("storeId") Long storeId);
+    
+    StoreProduct findByProductIdAndStoreId(Long productId, Long storeId);
 }
