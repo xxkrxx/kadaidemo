@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.Administrator;
 import com.example.demo.entity.Post;
@@ -144,19 +145,34 @@ public class AdminController {
         return "AdminCreate";
     }
 
+ // 管理者の作成処理
     @PostMapping("/create")
-    public String createAdmin(@Valid Administrator admin, BindingResult result, Model model) {
+    public String createAdmin(@Valid Administrator admin, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+        // 既に存在するメールアドレスの確認
+        if (adminService.findByEmail(admin.getEmail()) != null) {
+            result.rejectValue("email", "error.admin", "このメールアドレスは既に使用されています。");
+            model.addAttribute("errorMessage", "このメールアドレスは既に使用されています。再度入力してください。");
+            prepareAdminFormModel(model, admin);
+            return "AdminCreate";
+        }
+
         if (result.hasErrors()) {
             prepareAdminFormModel(model, admin);
             return "AdminCreate";
         }
-        
+
         // 新しい管理者に "管理者" ロールを付与
         Role adminRole = roleService.findByName("管理者").orElseThrow(() -> new RuntimeException("ロールが見つかりません"));
+        admin.getRoles().clear(); // 選択したロール以外をクリア
         admin.getRoles().add(adminRole);
         adminService.registerOrUpdateAdministrator(admin);
+
+        // 成功メッセージをフラッシュ属性に設定
+        redirectAttributes.addFlashAttribute("message", "管理者が正常に作成されました。");
+
         return "redirect:/admin/details/" + admin.getId();
     }
+
 
     // 管理者のフォーム処理を行う
     private String processAdminForm(Administrator admin, BindingResult result, Model model, String viewName) {

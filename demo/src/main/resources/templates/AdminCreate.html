@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>ユーザー新規作成</title>
-	<link rel="stylesheet" href="/form-styles.css">
+    <link rel="stylesheet" href="/form-styles.css">
 </head>
 <body>
-    <h1>ユーザー新規作成</h1>
+    <h1>ユーザー新規作成画面</h1>
     <form th:action="@{/admin/create}" th:object="${admin}" method="post">
         <div>
             <label for="store">店舗:</label>
@@ -59,7 +59,9 @@
         <div>
             <button type="submit">作成</button>
         </div>
+        <div>
+            <span th:text="${errorMessage}" style="color: red;"></span>
+        </div>
     </form>
 </body>
 </html>
-
