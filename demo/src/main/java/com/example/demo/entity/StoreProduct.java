@@ -32,10 +32,6 @@ public class StoreProduct {
     @ManyToOne
     @JoinColumn(name = "product_id") // product_id 列でProductエンティティと結合
     private Product product; // Productエンティティとの多対一のリレーション
-    
-    @ManyToOne
-    @JoinColumn(name = "store_product_id")
-    private StoreProduct storeProduct; // StoreProductエンティティとの関連
 
     @Column(name = "retail_price", nullable = false)
     private int retailPrice; // 小売価格
@@ -85,4 +81,3 @@ public class StoreProduct {
                 ", updatedAt=" + updatedAt + '}';
     }
 }
-
