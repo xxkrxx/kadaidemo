@@ -62,7 +62,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public String createOrder(@ModelAttribute Order order, Principal principal, @RequestParam("productId") Long productId) {
+    public String createOrder(@ModelAttribute Order order, Principal principal, @RequestParam("productId") Long productId, Model model) {
         String username = principal.getName();
         Administrator admin = orderService.findAdminByUsername(username);
 
@@ -81,11 +81,18 @@ public class OrderController {
         order.setAdmin(admin);
         order.setStore(admin.getStore());
 
-        orderService.saveOrder(order);
-        productService.updateStock(productId, order.getQuantity());
+        try {
+            orderService.createOrder(productId, admin.getStore().getId(), order.getQuantity());
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("stockError", e.getMessage());
+            model.addAttribute("storeName", admin.getStore().getName());
+            model.addAttribute("order", order); // 現在の注文オブジェクトを保持
+            return "OrderForm"; // 注文画面のテンプレート名を指定
+        }
 
         return "redirect:/orders/history"; // 注文履歴ページにリダイレクト
     }
+
 
     @GetMapping("/history")
     public String listOrders(Model model, Principal principal) {
@@ -103,5 +110,6 @@ public class OrderController {
 
         return "OrderHistory"; // 注文履歴のビューを返す
     }
+
 }
 

@@ -16,6 +16,8 @@ import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.StoreProductRepository;
 import com.example.demo.service.OrderService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -80,28 +82,38 @@ public class OrderServiceImpl implements OrderService {
     /*
      * 商品の発注を作成します。店舗に紐づく商品かどうかを確認します。
      */
+    @Transactional // トランザクション管理
     @Override
     public void createOrder(Long productId, Long storeId, int quantity) {
         // StoreProductを取得
         StoreProduct storeProduct = storeProductRepository.findByProductIdAndStoreId(productId, storeId);
-        
-        // 商品が存在しない、または在庫が不足している場合のエラーハンドリング
-        if (storeProduct == null || storeProduct.getStock() < quantity) {
-            throw new IllegalArgumentException("商品が見つからないか、在庫が不足しています。");
+
+        // 商品が存在しない場合のエラーハンドリング
+        if (storeProduct == null) {
+            throw new IllegalArgumentException("商品が見つかりません。");
         }
+
+        // 在庫が不足している場合のエラーハンドリング
+        if (storeProduct.getStock() < quantity) {
+            throw new IllegalArgumentException("在庫が不足しています。現在の在庫: " + storeProduct.getStock());
+        }
+
+        // 在庫を更新
+        int updatedStock = storeProduct.getStock() - quantity;
+        storeProduct.setStock(updatedStock);
 
         // 発注処理
         Order order = new Order();
-        order.setProduct(storeProduct.getProduct()); // 商品をStoreProductから設定
+        order.setProduct(storeProduct.getProduct());
         order.setQuantity(quantity);
-        order.setTotalPrice(storeProduct.getRetailPrice() * quantity); // 合計金額を設定
-        order.setStore(storeProduct.getStore()); // 正しい店舗を設定
+        order.setTotalPrice(storeProduct.getRetailPrice() * quantity);
+        order.setStore(storeProduct.getStore());
 
-        // 在庫を更新
-        storeProduct.setStock(storeProduct.getStock() - quantity);
-        orderRepository.save(order); // 注文をデータベースに保存
-        storeProductRepository.save(storeProduct); // 在庫を更新して保存
+        // トランザクション内で保存
+        orderRepository.save(order);
+        storeProductRepository.save(storeProduct);
     }
+
 }
 
 
