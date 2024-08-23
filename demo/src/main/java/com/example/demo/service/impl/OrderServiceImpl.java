@@ -34,9 +34,14 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("商品と数量は注文を保存する前に設定する必要があります。");
         }
 
+        // 商品情報を取得
         Product product = order.getProduct();
-        order.setTotalPrice(product.getCostPrice() * order.getQuantity()); // 合計金額を設定
-        orderRepository.save(order); // 注文をデータベースに保存
+
+        // 合計金額を計算して設定
+        order.setTotalPrice(product.getCostPrice() * order.getQuantity());
+
+        // 注文をデータベースに保存
+        orderRepository.save(order);
     }
 
     @Override
@@ -46,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrdersByStore(Store store) {
+        // 指定された店舗に紐づく注文を取得して返す
         return orderRepository.findByStore(store);
     }
 
@@ -58,34 +64,41 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Administrator findAdminByUsername(String username) {
         System.out.println("Searching for admin with username: " + username);
+
+        // メールアドレスで管理者を検索
         Optional<Administrator> adminOpt = administratorRepository.findByEmail(username);
-        Administrator admin = adminOpt.orElseThrow(() -> new RuntimeException("指定されたユーザー名の管理者が見つかりません。"));
+
+        // 管理者が見つからない場合は例外をスロー
+        Administrator admin = adminOpt.orElseThrow(() -> 
+            new RuntimeException("指定されたユーザー名の管理者が見つかりません。"));
+
         System.out.println("Found admin: " + admin);
         return admin;
     }
 
     @Override
     public void createOrder(Long productId, Long storeId, int quantity) {
-        // StoreProductを取得
+        // 商品と店舗に対応するStoreProductを取得
         StoreProduct storeProduct = storeProductRepository.findByProductIdAndStoreId(productId, storeId);
         
-        if (storeProduct == null || storeProduct.getStock() < quantity) {
-            throw new IllegalArgumentException("商品が見つからないか、在庫が不足しています。");
+        if (storeProduct == null) {
+            throw new IllegalArgumentException("商品が見つかりません。");
         }
 
-        // 発注処理
+        // 新しい注文を作成
         Order order = new Order();
         order.setProduct(storeProduct.getProduct());
         order.setQuantity(quantity);
         order.setTotalPrice(storeProduct.getRetailPrice() * quantity);
         order.setStore(storeProduct.getStore());
-        order.setAdmin(storeProduct.getStore().getAdmin()); // 管理者情報を設定
+        order.setAdmin(storeProduct.getStore().getAdmin());
 
-        // 在庫を更新
-        storeProduct.setStock(storeProduct.getStock() - quantity);
+        // 在庫を増やす
+        storeProduct.setStock(storeProduct.getStock() + quantity);
+
+        // 注文と更新されたStoreProductをデータベースに保存
         orderRepository.save(order);
         storeProductRepository.save(storeProduct);
     }
-
 }
 
