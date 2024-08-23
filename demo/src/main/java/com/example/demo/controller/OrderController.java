@@ -61,6 +61,7 @@ public class OrderController {
         return "OrderForm"; // 注文フォームのビューを返す
     }
 
+    
     @PostMapping
     public String createOrder(@ModelAttribute Order order, Principal principal, @RequestParam("productId") Long productId) {
         String username = principal.getName();
@@ -70,22 +71,17 @@ public class OrderController {
             return "error/500"; // 管理者が見つからない場合はエラーページ
         }
 
-        Optional<Product> productOpt = productService.getProductById(productId);
-
-        if (productOpt.isEmpty()) {
-            return "error/404"; // 商品が見つからない場合はエラーページ
+        try {
+            // admin.getStore().getId() を使用してストアIDを取得
+            orderService.createOrder(productId, admin.getStore().getId(), order.getQuantity());
+        } catch (IllegalArgumentException e) {
+            return "error/400"; // 商品が見つからないか、在庫が不足している場合はエラーページ
         }
-
-        Product product = productOpt.get();
-        order.setProduct(product);
-        order.setAdmin(admin);
-        order.setStore(admin.getStore());
-
-        orderService.saveOrder(order);
-        productService.updateStock(productId, order.getQuantity());
 
         return "redirect:/orders/history"; // 注文履歴ページにリダイレクト
     }
+
+
 
     @GetMapping("/history")
     public String listOrders(Model model, Principal principal) {
@@ -104,5 +100,3 @@ public class OrderController {
         return "OrderHistory"; // 注文履歴のビューを返す
     }
 }
-
-

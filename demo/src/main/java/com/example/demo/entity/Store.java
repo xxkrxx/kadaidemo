@@ -22,49 +22,50 @@ public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
- 
     private Long id;
 
     @NotBlank(message = "店舗名は必須です")
-    // 店舗名。空白であってはならない（バリデーション）
     private String name;
 
     @NotBlank(message = "住所は必須です")
-    // 住所。空白であってはならない（バリデーション）
     private String address;
 
-    // レコードの作成日時
     private LocalDateTime createdAt;
-
-    // レコードの更新日時
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "store")
     @ToString.Exclude
-    // 店舗に関連する製品のリスト。双方向の関連を避けるためにToStringから除外
     private List<StoreProduct> storeProducts;
+
+    @OneToMany(mappedBy = "store")
+    @ToString.Exclude
+    private List<Administrator> administrators; 
 
     @PrePersist
     protected void onCreate() {
-        // エンティティが初めて保存される前に実行されるメソッド
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        // エンティティが更新される前に実行されるメソッド
         this.updatedAt = LocalDateTime.now();
     }
 
     @Override
     public String toString() {
-        // エンティティの文字列表現をカスタマイズ
         return "Store{id=" + id + 
                 ", name='" + name + '\'' + 
                 ", address='" + address + '\'' + 
                 ", createdAt=" + createdAt + 
                 ", updatedAt=" + updatedAt + '}';
     }
+
+    // 新しく追加されたメソッド
+    public Administrator getAdmin() {
+        // ここでは最初の管理者を返す例として実装
+        return administrators.isEmpty() ? null : administrators.get(0);
+    }
 }
+
 

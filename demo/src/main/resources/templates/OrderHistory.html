@@ -7,7 +7,8 @@
 </head>
 <body>
     <h1>商品発注履歴画面</h1>
-    <p>ログイン中: 管理者 <span th:text="${adminFullName != null ? adminFullName : 'N/A'}"></span> | 店舗 <span th:text="${storeName != null ? storeName : 'N/A'}"></span></p>
+    <p>ログイン中: 管理者 <span th:text="${adminFullName != null ? adminFullName : 'N/A'}">N/A</span> | 店舗 <span th:text="${storeName != null ? storeName : 'N/A'}">N/A</span></p>
+
     <!-- 発注履歴 -->
     <h3>発注履歴</h3>
     <table border="1">
@@ -26,7 +27,7 @@
         <tbody>
             <tr th:each="order : ${orders}">
                 <td th:text="${order.id != null ? order.id : 'N/A'}">発注ID</td>
-                <td th:text="${order.admin != null ? order.admin.firstName + ' ' + order.admin.lastName : 'N/A'}">管理者</td>
+				<td th:text="${order.admin != null ? order.admin.firstName + ' ' + order.admin.lastName : 'N/A'}">管理者</td>
                 <td th:text="${order.product != null ? order.product.name : 'N/A'}">商品名</td>
                 <td th:text="${order.store != null ? order.store.name : 'N/A'}">店舗名</td>
                 <td th:text="${order.quantity != null ? order.quantity : 'N/A'}">発注数</td>

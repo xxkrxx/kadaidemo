@@ -19,53 +19,41 @@ public class SecurityConfig {
 
     private final UserService userService;
 
-    // コンストラクタで UserService を注入
     public SecurityConfig(UserService userService) {
         this.userService = userService;
     }
 
-    // SecurityFilterChain の設定を行う Bean メソッド
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authz -> authz
-                // 特定の URL に対しては認証なしでアクセスを許可
-                .requestMatchers("/admin/signin", "/signin.css","/admin/forgetPassword", "/api/orders", "/api/products").permitAll()
-                // 上記以外の URL には認証を要求
+                .requestMatchers("/admin/signin", "/signin.css", "/admin/forgetPassword", "/api/orders", "/api/products").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                // カスタムログインページの設定
                 .loginPage("/admin/signin")
-                // ログイン成功後の遷移先 URL
                 .defaultSuccessUrl("/admin/top", true)
-                // ログイン失敗時の遷移先 URL
                 .failureUrl("/admin/signin?error")
                 .permitAll()
             )
             .logout(logout -> logout
-                    // ログアウト URL の設定
-                    .logoutUrl("/logout")
-                    // ログアウト後の遷移先 URL
-                    .logoutSuccessUrl("/admin/signin")
-                    .permitAll()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/admin/signin")
+                .permitAll()
             );
         return http.build();
     }
 
-    // パスワードのエンコーディングに使用する Bean メソッド
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Thymeleaf の Spring Security ダイアレクトを設定する Bean メソッド
     @Bean
     public SpringSecurityDialect springSecurityDialect() {
         return new SpringSecurityDialect();
     }
 
-    // AuthenticationManager を設定する Bean メソッド
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -73,4 +61,3 @@ public class SecurityConfig {
         return auth.build();
     }
 }
-
