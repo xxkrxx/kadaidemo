@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -53,23 +53,27 @@ public class Product {
     }
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonManagedReference // Orderエンティティとの双方向リレーションを管理するために使用
-    private List<Order> orders; // この商品詳細に関連する注文のリスト
+    @JsonIgnore // 循環参照を防ぐために使用
+    private List<StoreProduct> storeProducts; // StoreProduct型のリスト
 
     @ManyToOne
+    @JoinColumn(name = "large_category_id")
     @JsonBackReference // LargeCategoryエンティティへの参照を管理
     private LargeCategory largeCategory; // 大カテゴリー
 
     @ManyToOne
+    @JoinColumn(name = "middle_category_id")
     @JsonBackReference // MiddleCategoryエンティティへの参照を管理
     private MiddleCategory middleCategory; // 中カテゴリー
 
     @ManyToOne
+    @JoinColumn(name = "small_category_id")
     @JsonBackReference // SmallCategoryエンティティへの参照を管理
     private SmallCategory smallCategory; // 小カテゴリー
 
     @ManyToOne
     @JoinColumn(name = "store_id") // 店舗情報を持つための関連
+    @JsonBackReference // Storeエンティティへの参照を管理
     private Store store; // 店舗情報
 }
 

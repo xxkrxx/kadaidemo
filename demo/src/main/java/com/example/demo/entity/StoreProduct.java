@@ -2,6 +2,9 @@ package com.example.demo.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,10 +30,13 @@ public class StoreProduct {
     @ManyToOne
     @JoinColumn(name = "store_id") // store_id 列でStoreエンティティと結合
     @ToString.Exclude
+    @JsonIgnore // 循環参照を防ぐために使用
     private Store store; // Storeエンティティとの多対一のリレーション
 
     @ManyToOne
     @JoinColumn(name = "product_id") // product_id 列でProductエンティティと結合
+    @ToString.Exclude
+    @JsonBackReference // 循環参照を防ぐために使用
     private Product product; // Productエンティティとの多対一のリレーション
 
     @Column(name = "retail_price", nullable = false)
@@ -45,34 +51,19 @@ public class StoreProduct {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt; // 更新日時
 
-    // デフォルトコンストラクター
-    public StoreProduct() {
-    }
-
-    // ProductからStoreProductを作成するためのコンストラクター
-    public StoreProduct(Product product, int retailPrice, int stock, Store store) {
-        this.product = product;
-        this.retailPrice = retailPrice;
-        this.stock = stock;
-        this.store = store;
-    }
-
     @PrePersist
     protected void onCreate() {
-        // レコード作成前に呼ばれるメソッド
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        // レコード更新前に呼ばれるメソッド
         this.updatedAt = LocalDateTime.now();
     }
 
     @Override
     public String toString() {
-        // カスタムtoStringメソッド
         return "StoreProduct{id=" + id +
                 ", product=" + (product != null ? product.getName() : "null") +
                 ", retailPrice=" + retailPrice +

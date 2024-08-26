@@ -3,6 +3,9 @@ package com.example.demo.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +16,6 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.ToString;
 
 @Entity
 @Table(name = "stores")
@@ -34,11 +36,11 @@ public class Store {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "store")
-    @ToString.Exclude
-    private List<StoreProduct> storeProducts;
+    @JsonManagedReference
+    private List<StoreProduct> storeProducts; 
 
     @OneToMany(mappedBy = "store")
-    @ToString.Exclude
+    @JsonIgnoreProperties({"store"}) // 適切なプロパティを無視
     private List<Administrator> administrators; 
 
     @PrePersist
@@ -61,11 +63,8 @@ public class Store {
                 ", updatedAt=" + updatedAt + '}';
     }
 
-    // 新しく追加されたメソッド
     public Administrator getAdmin() {
         // ここでは最初の管理者を返す例として実装
         return administrators.isEmpty() ? null : administrators.get(0);
     }
 }
-
-
