@@ -9,10 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.dto.OrderDetailDTO;
 import com.example.demo.entity.Administrator;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.Product;
@@ -61,7 +63,6 @@ public class OrderController {
         return "OrderForm"; // 注文フォームのビューを返す
     }
 
-    
     @PostMapping
     public String createOrder(@ModelAttribute Order order, Principal principal, @RequestParam("productId") Long productId) {
         String username = principal.getName();
@@ -81,8 +82,6 @@ public class OrderController {
         return "redirect:/orders/history"; // 注文履歴ページにリダイレクト
     }
 
-
-
     @GetMapping("/history")
     public String listOrders(Model model, Principal principal) {
         String username = principal.getName();
@@ -98,5 +97,12 @@ public class OrderController {
         model.addAttribute("storeName", admin.getStore() != null ? admin.getStore().getName() : "未設定");
 
         return "OrderHistory"; // 注文履歴のビューを返す
+    }
+
+    @GetMapping("/details/{orderId}")
+    public String orderDetail(@PathVariable Long orderId, Model model) {
+        OrderDetailDTO orderDetail = orderService.getOrderDetail(orderId);
+        model.addAttribute("orderDetail", orderDetail);
+        return "OrderDetail"; // 注文詳細のビューを返す
     }
 }

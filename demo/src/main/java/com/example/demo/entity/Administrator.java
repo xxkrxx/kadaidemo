@@ -75,5 +75,9 @@ public class Administrator {
     @NotNull(message = "Posts are required")
     @ToString.Exclude
     private Set<Post> posts;
-}
 
+    // フルネームを返すメソッド
+    public String name() {
+        return this.firstName + " " + this.lastName;
+    }
+}

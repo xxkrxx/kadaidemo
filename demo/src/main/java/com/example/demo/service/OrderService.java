@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import com.example.demo.dto.OrderDetailDTO;
+import com.example.demo.dto.StoreProductOrderDTO;
 import com.example.demo.entity.Administrator;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.Store;
@@ -25,4 +27,8 @@ public interface OrderService {
     
     /* 注文を作成するメソッド */
     void createOrder(Long productId, Long storeId, int quantity);
+    
+    OrderDetailDTO getOrderDetail(Long orderId);
+    
+    StoreProductOrderDTO getStoreProductOrderDTO(Store store);
 }

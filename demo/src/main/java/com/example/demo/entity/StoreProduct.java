@@ -2,9 +2,6 @@ package com.example.demo.entity;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,17 +27,15 @@ public class StoreProduct {
     @ManyToOne
     @JoinColumn(name = "store_id") // store_id 列でStoreエンティティと結合
     @ToString.Exclude
-    @JsonIgnore // 循環参照を防ぐために使用
     private Store store; // Storeエンティティとの多対一のリレーション
 
     @ManyToOne
     @JoinColumn(name = "product_id") // product_id 列でProductエンティティと結合
     @ToString.Exclude
-    @JsonBackReference // 循環参照を防ぐために使用
     private Product product; // Productエンティティとの多対一のリレーション
 
     @Column(name = "retail_price", nullable = false)
-    private int retailPrice; // 小売価格
+    private Double retailPrice; // 小売価格
 
     @Column(name = "stock", nullable = false)
     private int stock; // 在庫数
@@ -62,6 +57,14 @@ public class StoreProduct {
         this.updatedAt = LocalDateTime.now();
     }
 
+    // costPriceにアクセスするためのゲッターを追加
+    public Double getCostPrice() {
+        return product != null ? product.getCostPrice() : null;
+    }
+
+    // 明示的なデフォルトコンストラクタ
+    public StoreProduct() {}
+    
     @Override
     public String toString() {
         return "StoreProduct{id=" + id +

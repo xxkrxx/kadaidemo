@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Entity
@@ -15,8 +17,12 @@ public class SmallCategory {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "middle_category_id")
+    private MiddleCategory middleCategory;
+
     @Override
     public String toString() {
-        return "SmallCategory{id=" + id + ", name='" + name + "'}";
+        return "SmallCategory{id=" + id + ", name='" + name + "', middleCategory=" + middleCategory.getName() + "}";
     }
 }

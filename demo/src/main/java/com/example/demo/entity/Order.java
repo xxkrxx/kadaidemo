@@ -43,11 +43,13 @@ public class Order {
     private double totalPrice; // 合計金額
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDateTime orderDate; // 新しく追加
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.orderDate = LocalDateTime.now(); // 初期化
     }
 
     @PreUpdate
@@ -55,5 +57,3 @@ public class Order {
         this.updatedAt = LocalDateTime.now();
     }
 }
-
-

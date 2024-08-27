@@ -32,10 +32,12 @@ public interface ProductService {
     // すべてのStoreProductを取得
     List<StoreProduct> getAllStoreProducts();
 
-    // 店舗に関連する商品のリストを取得
-    List<Product> getProductsForStore(Long storeId);
+    // 店舗に関連するStoreProductのリストを取得
+    List<StoreProduct> getProductsForStore(Long storeId);
 
     // 店舗IDでStoreProductをページングして取得
     Page<StoreProduct> findByStoreId(Long storeId, Pageable pageable);
+    
+ // すべてのProductを取得
+    List<Product> getAllProducts();
 }
-

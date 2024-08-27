@@ -42,21 +42,40 @@ public class ProductController {
                                @RequestParam(value = "largeCategoryId", required = false) Long largeCategoryId,
                                @RequestParam(value = "middleCategoryId", required = false) Long middleCategoryId,
                                @RequestParam(value = "smallCategoryId", required = false) Long smallCategoryId,
-                               @RequestParam(value = "storeId", required = false) Long storeId, // 追加
+                               @RequestParam(value = "storeId", required = false) Long storeId,
                                @RequestParam(value = "page", defaultValue = "0") int page,
                                @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        // カテゴリのバリデーション
+        if (middleCategoryId != null && largeCategoryId == null) {
+            middleCategoryId = null; // 大カテゴリが未指定なら中カテゴリを無効化
+        }
+        if (smallCategoryId != null && (largeCategoryId == null || middleCategoryId == null)) {
+            smallCategoryId = null; // 大カテゴリか中カテゴリが未指定なら小カテゴリを無効化
+        }
+
         Pageable pageable = PageRequest.of(page, size);
         Page<StoreProduct> productPage = productService.findByCriteria(search, largeCategoryId, middleCategoryId, smallCategoryId, storeId, pageable);
 
+        // 各カテゴリの選択肢をフィルタリング
+        if (largeCategoryId != null) {
+            model.addAttribute("middleCategories", middleCategoryRepository.findByLargeCategory_Id(largeCategoryId));
+        } else {
+            model.addAttribute("middleCategories", middleCategoryRepository.findAll());
+        }
+        if (middleCategoryId != null) {
+            model.addAttribute("smallCategories", smallCategoryRepository.findByMiddleCategoryId(middleCategoryId));
+        } else {
+            model.addAttribute("smallCategories", smallCategoryRepository.findAll());
+        }
+
         model.addAttribute("productPage", productPage);
         model.addAttribute("largeCategories", largeCategoryRepository.findAll());
-        model.addAttribute("middleCategories", middleCategoryRepository.findAll());
-        model.addAttribute("smallCategories", smallCategoryRepository.findAll());
         model.addAttribute("search", search);
         model.addAttribute("largeCategoryId", largeCategoryId);
         model.addAttribute("middleCategoryId", middleCategoryId);
         model.addAttribute("smallCategoryId", smallCategoryId);
-        model.addAttribute("storeId", storeId); // 追加
+        model.addAttribute("storeId", storeId);
 
         return "productList";
     }

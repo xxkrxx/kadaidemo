@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Entity
@@ -15,8 +17,12 @@ public class MiddleCategory {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "large_category_id")
+    private LargeCategory largeCategory;
+
     @Override
     public String toString() {
-        return "MiddleCategory{id=" + id + ", name='" + name + "'}";
+        return "MiddleCategory{id=" + id + ", name='" + name + "', largeCategory=" + largeCategory.getName() + "}";
     }
 }

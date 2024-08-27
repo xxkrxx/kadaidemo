@@ -2,10 +2,14 @@ package com.example.demo.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.OrderDetailDTO;
+import com.example.demo.dto.ProductDetailDTO;
+import com.example.demo.dto.StoreProductOrderDTO;
 import com.example.demo.entity.Administrator;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.Product;
@@ -34,13 +38,8 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("商品と数量は注文を保存する前に設定する必要があります。");
         }
 
-        // 商品情報を取得
         Product product = order.getProduct();
-
-        // 合計金額を計算して設定
         order.setTotalPrice(product.getCostPrice() * order.getQuantity());
-
-        // 注文をデータベースに保存
         orderRepository.save(order);
     }
 
@@ -51,7 +50,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrdersByStore(Store store) {
-        // 指定された店舗に紐づく注文を取得して返す
         return orderRepository.findByStore(store);
     }
 
@@ -63,42 +61,77 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Administrator findAdminByUsername(String username) {
-        System.out.println("Searching for admin with username: " + username);
-
-        // メールアドレスで管理者を検索
         Optional<Administrator> adminOpt = administratorRepository.findByEmail(username);
-
-        // 管理者が見つからない場合は例外をスロー
-        Administrator admin = adminOpt.orElseThrow(() -> 
-            new RuntimeException("指定されたユーザー名の管理者が見つかりません。"));
-
-        System.out.println("Found admin: " + admin);
-        return admin;
+        return adminOpt.orElseThrow(() -> new RuntimeException("指定されたユーザー名の管理者が見つかりません。"));
     }
 
     @Override
     public void createOrder(Long productId, Long storeId, int quantity) {
-        // 商品と店舗に対応するStoreProductを取得
         StoreProduct storeProduct = storeProductRepository.findByProductIdAndStoreId(productId, storeId);
         
         if (storeProduct == null) {
             throw new IllegalArgumentException("商品が見つかりません。");
         }
 
-        // 新しい注文を作成
         Order order = new Order();
-        order.setProduct(storeProduct.getProduct());
+        order.setProduct(storeProduct.getProduct()); // この行で商品が正しく設定されているか確認
         order.setQuantity(quantity);
         order.setTotalPrice(storeProduct.getRetailPrice() * quantity);
         order.setStore(storeProduct.getStore());
         order.setAdmin(storeProduct.getStore().getAdmin());
 
-        // 在庫を増やす
-        storeProduct.setStock(storeProduct.getStock() + quantity);
-
-        // 注文と更新されたStoreProductをデータベースに保存
+        storeProduct.setStock(storeProduct.getStock() - quantity);
         orderRepository.save(order);
         storeProductRepository.save(storeProduct);
     }
-}
+    @Override
+    public OrderDetailDTO getOrderDetail(Long orderId) {
+        Optional<Order> orderOpt = orderRepository.findById(orderId);
+        if (orderOpt.isPresent()) {
+            Order order = orderOpt.get();
+            Product product = order.getProduct();
+            Administrator admin = order.getAdmin();
 
+            String productName = product.getName();
+            String adminName = admin.getFirstName() + " " + admin.getLastName();
+            int quantity = order.getQuantity();
+            double totalPrice = order.getTotalPrice();
+
+            return new OrderDetailDTO(productName, adminName, quantity, totalPrice);
+        } else {
+            throw new RuntimeException("注文が見つかりません。ID: " + orderId);
+        }
+    }
+
+
+    @Override
+    public StoreProductOrderDTO getStoreProductOrderDTO(Store store) {
+        // Storeに関連するStoreProductエンティティを取得してDTOにマッピング
+        List<ProductDetailDTO> productDetailDTOs = storeProductRepository.findByStore(store).stream()
+                .map(storeProduct -> new ProductDetailDTO(
+                        storeProduct.getProduct().getName(),
+                        storeProduct.getRetailPrice(),
+                        storeProduct.getStock()))
+                .collect(Collectors.toList());
+
+        // Storeに関連するOrderエンティティを取得してDTOにマッピング
+        List<OrderDetailDTO> orderDetailDTOs = orderRepository.findByStore(store).stream()
+                .map(order -> {
+                    Product product = order.getProduct();
+                    Administrator admin = order.getAdmin();
+                    return new OrderDetailDTO(
+                            product.getName(),
+                            admin.getFirstName() + " " + admin.getLastName(),
+                            order.getQuantity(),
+                            order.getTotalPrice());
+                }).collect(Collectors.toList());
+
+        // 最終的にStoreProductOrderDTOを作成
+        StoreProductOrderDTO dto = new StoreProductOrderDTO();
+        dto.setStoreName(store.getName());
+        dto.setAddress(store.getAddress());
+        dto.setProducts(productDetailDTOs);
+        dto.setOrders(orderDetailDTOs);
+        return dto;
+    }
+}
