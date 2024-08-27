@@ -67,23 +67,27 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void createOrder(Long productId, Long storeId, int quantity) {
-        StoreProduct storeProduct = storeProductRepository.findByProductIdAndStoreId(productId, storeId);
-        
-        if (storeProduct == null) {
+        List<StoreProduct> storeProducts = storeProductRepository.findByProductIdAndStoreId(productId, storeId);
+
+        if (storeProducts == null || storeProducts.isEmpty()) {
             throw new IllegalArgumentException("商品が見つかりません。");
         }
 
-        Order order = new Order();
-        order.setProduct(storeProduct.getProduct()); // この行で商品が正しく設定されているか確認
-        order.setQuantity(quantity);
-        order.setTotalPrice(storeProduct.getRetailPrice() * quantity);
-        order.setStore(storeProduct.getStore());
-        order.setAdmin(storeProduct.getStore().getAdmin());
+        for (StoreProduct storeProduct : storeProducts) {
+            Order order = new Order();
+            order.setProduct(storeProduct.getProduct());
+            order.setQuantity(quantity);
+            order.setTotalPrice(storeProduct.getRetailPrice() * quantity);
+            order.setStore(storeProduct.getStore());
+            order.setAdmin(storeProduct.getStore().getAdmin());
 
-        storeProduct.setStock(storeProduct.getStock() - quantity);
-        orderRepository.save(order);
-        storeProductRepository.save(storeProduct);
+            storeProduct.setStock(storeProduct.getStock() + quantity);
+
+            orderRepository.save(order);
+            storeProductRepository.save(storeProduct);
+        }
     }
+
     @Override
     public OrderDetailDTO getOrderDetail(Long orderId) {
         Optional<Order> orderOpt = orderRepository.findById(orderId);
@@ -102,7 +106,6 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("注文が見つかりません。ID: " + orderId);
         }
     }
-
 
     @Override
     public StoreProductOrderDTO getStoreProductOrderDTO(Store store) {

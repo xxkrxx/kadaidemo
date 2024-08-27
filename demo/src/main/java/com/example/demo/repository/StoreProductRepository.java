@@ -32,11 +32,12 @@ public interface StoreProductRepository extends JpaRepository<StoreProduct, Long
     List<StoreProduct> findByStore(@Param("store") Store store);
 
     // プロダクトIDと店舗IDに基づいてStoreProductを取得するメソッド
-    StoreProduct findByProductIdAndStoreId(Long productId, Long storeId);
+    List<StoreProduct> findByProductIdAndStoreId(Long productId, Long storeId);
     
     // 店舗IDでStoreProductのリストをページネーションして取得するメソッド
     @Query("SELECT sp FROM StoreProduct sp WHERE sp.store.id = :storeId")
     Page<StoreProduct> findByStoreId(@Param("storeId") Long storeId, Pageable pageable);
 
-	List<StoreProduct> findByStoreId(Long storeId);
+    // 店舗IDでStoreProductのリストを取得するメソッド
+    List<StoreProduct> findByStoreId(Long storeId);
 }
