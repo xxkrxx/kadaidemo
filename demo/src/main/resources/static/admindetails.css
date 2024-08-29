@@ -1,0 +1,70 @@
+@charset "UTF-8";
+/* 全体の設定 */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 20px;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* ヘッダーのスタイル */
+h1 {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+/* 情報表示のスタイル */
+.info {
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+.info strong {
+    display: inline-block;
+    width: 120px; /* 左揃えのための幅指定 */
+}
+
+/* リストのスタイル */
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    padding: 0;
+}
+
+/* 各リスト項目のスタイル */
+ul li {
+    margin-bottom: 5px;
+}
+
+/* ボタンのスタイル */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* 管理者のみの操作エリア */
+.actions {
+    margin-top: 20px;
+}
+
+/* 戻るボタンのスタイル */
+button.back-to-list {
+    background-color: #6c757d;
+    margin-top: 20px;
+    display: inline-block;
+}

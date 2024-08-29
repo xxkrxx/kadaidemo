@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>大カテゴリ詳細</title>
+</head>
+<body>
+    <h1>大カテゴリ詳細</h1>
+    <p>大カテゴリID: <span th:text="${mainCategory.id}"></span></p>
+    <p>大カテゴリ名: <span th:text="${mainCategory.name}"></span></p>
+
+    <h2>中カテゴリ一覧</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>中カテゴリID</th>
+                <th>中カテゴリ名</th>
+                <th>詳細</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="subCategory : ${subCategories}">
+                <td th:text="${subCategory.id}">middle_categories.id</td>
+                <td th:text="${subCategory.name}">middle_categories.name</td>
+                <td><a th:href="@{/categories/middle/{id}(id=${subCategory.id})}">詳細を見る</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>小カテゴリ詳細</title>
+</head>
+<body>
+    <h1>小カテゴリ詳細画面</h1>
+    
+    <div th:if="${smallCategory == null}">
+        <p>smallCategory is null</p>
+    </div>
+    
+    <div th:if="${smallCategory != null}">
+        <p>小カテゴリID: <span th:text="${smallCategory.id}">ID</span></p>
+        <p>小カテゴリ名: <span th:text="${smallCategory.name}">Name</span></p>
+    </div>
+</body>
+</html>

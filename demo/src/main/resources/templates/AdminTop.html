@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>トップ画面</title>
+    <style>
+		body {
+		    font-family: Arial, sans-serif;
+		    margin: 0;
+		    padding: 0;
+		    background-color: #f4f4f4;
+		}
+		
+		.container {
+		    max-width: 1200px;
+		    margin: 0 auto;
+		    padding: 20px;
+		}
+		
+		h1 {
+		    text-align: center;
+		    color: #333;
+		}
+		
+		.link-group {
+		    display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    gap: 10px;
+		}
+		
+		.button {
+		    display: inline-block;
+		    padding: 10px 90px;
+		    margin: 5px;
+		    border: none;
+		    border-radius: 5px;
+		    background-color: #007bff;
+		    color: white;
+		    text-align: center;
+		    text-decoration: none;
+		    font-size: 16px;
+		    transition: background-color 0.3s ease;
+		}
+		
+		.button:hover {
+		    background-color: #0056b3;
+		}
+		
+		.button:active {
+		    background-color: #00408d;
+		}
+		
+		.button:focus {
+		    outline: none;
+		}
+	</style> 
+</head>
+<body>
+    <div class="container">
+        <h1>トップ画面</h1>
+        <div class="link-group">
+            <a href="/stores/list" class="button" id="store_link">店舗管理</a>
+            <a href="/products/list" class="button" id="product_link">商品管理</a>
+            <a href="/admin/list" class="button" id="user_link">ユーザ管理</a>
+            <a href="/manufacturers/list" class="button" id="maker_link">メーカ管理</a>
+            <a href="/categories/main" class="button" id="category_link">カテゴリ管理</a>
+        </div>
+    </div>
+</body>
+</html>

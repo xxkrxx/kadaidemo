@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>メーカー詳細</title>
+	<link rel="stylesheet" href="/manufacturer.css">
+</head>
+<body>
+    <h1>メーカー詳細画面</h1>
+    <div>
+        <p>ID: <span th:text="${manufacturer.id}"></span></p>
+        <p>メーカー名: <span th:text="${manufacturer.name}"></span></p>
+        <p>作成日時: <span th:text="${manufacturer.createdAt}"></span></p>
+        <p>更新日時: <span th:text="${manufacturer.updatedAt}"></span></p>
+    </div>
+    <a th:href="@{/manufacturers/edit/{id}(id=${manufacturer.id})}">編集</a>
+    <a th:href="@{/manufacturers/list}">戻る</a>
+</body>
+</html>

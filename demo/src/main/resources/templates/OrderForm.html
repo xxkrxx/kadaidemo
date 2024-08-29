@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品発注</title>
+    <link rel="stylesheet" href="/productorder.css">
+</head>
+<body>
+    <h1>商品発注画面</h1>
+    <p>ログイン中: 管理者 <span th:text="${adminFullName}"></span> | 店舗 <span th:text="${storeName}"></span></p>
+    <div class="order-form-container">
+        <form th:action="@{/orders}" th:object="${order}" method="post">
+            <!-- 商品IDを隠しフィールドとして送信 -->
+            <input type="hidden" name="productId" th:value="${order.product.id}" />
+            <div>
+                <label for="productId">商品ID:</label>
+                <span id="productId" th:text="${order.product.id}"></span>
+            </div>
+            <div>
+                <label for="name">商品名:</label>
+                <span id="name" th:text="${order.product.name}"></span>
+            </div>
+            <div>
+                <label for="quantity">発注数:</label>
+                <input type="number" id="quantity" th:field="*{quantity}" min="1" max="1000" required />
+            </div>
+            <div>
+                <label for="adminFullName">管理者:</label>
+                <span th:text="${adminFullName}"></span>
+            </div>
+            <div>
+                <label for="storeName">店舗名:</label>
+                <span th:text="${storeName}"></span>
+            </div>
+            <div>
+                <button type="submit">発注する</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

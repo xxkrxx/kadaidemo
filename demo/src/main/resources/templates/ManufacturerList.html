@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>メーカー一覧画面</title>
+    <link rel="stylesheet" href="/manufacturer.css">
+</head>
+<body>
+    <h1>メーカー一覧画面</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>メーカーID</th>
+                <th>メーカー名</th>
+                <th>詳細</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="manufacturer : ${manufacturers}">
+                <td th:text="${manufacturer.id}">メーカーID</td>
+                <td th:text="${manufacturer.name}">メーカー名</td>
+                <td>
+                    <a th:href="@{/manufacturers/{id}(id=${manufacturer.id})}">詳細を見る</a>
+                    <a th:if="${isAdmin}" th:href="@{/manufacturers/edit/{id}(id=${manufacturer.id})}">編集</a>
+                    <form th:if="${isAdmin}" th:action="@{/manufacturers/{id}/delete(id=${manufacturer.id})}" method="post" style="display:inline;">
+                        <button type="submit">削除</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a th:if="${isAdmin}" th:href="@{/manufacturers/create}">新規作成</a>
+</body>
+</html>

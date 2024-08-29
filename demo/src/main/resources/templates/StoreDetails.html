@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>店舗詳細画面</title>
+    <link rel="stylesheet" href="/store.css">
+</head>
+<body>
+    <h1>店舗詳細画面</h1>
+    <p>ID: <span th:text="${store.id}"></span></p>
+    <p>店舗名: <span th:text="${store.name}"></span></p>
+    <p>住所: <span th:text="${store.address}"></span></p>
+    <p>作成日時: <span th:text="${store.createdAt}"></span></p>
+    <p>更新日時: <span th:text="${store.updatedAt}"></span></p>
+    <a th:href="@{/stores/edit/{id}(id=${store.id})}">編集する</a>
+    <a th:href="@{/stores/list}">戻る</a>
+</body>
+</html>
+

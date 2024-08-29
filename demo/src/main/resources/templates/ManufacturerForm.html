@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>メーカ新規作成</title>
+</head>
+<body>
+    <h1>メーカ新規作成画面</h1>
+    <form th:action="@{/manufacturers/create}" th:object="${manufacturer}" method="post">
+        <div>
+            <label for="name">メーカ名</label>
+            <input type="text" id="name" th:field="*{name}" required minlength="1" maxlength="255"/>
+        </div>
+        <div>
+            <button type="submit">作成する</button>
+        </div>
+        <div th:if="${message}" th:text="${message}" style="color: red;"></div>
+    </form>
+</body>
+</html>
